@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/Users/dquordle/CLionProjects/cub3d/get_next_line.c
+libft.h
+/Users/dquordle/CLionProjects/cub3d/libft.h
+
 /Users/dquordle/CLionProjects/cub3d/libft.h
 unistd.h
 -

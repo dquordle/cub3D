@@ -3,7 +3,7 @@ project(cub3d C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(cub3D main.c start.c get_next_line.c)
+add_executable(cub3D main.c start.c get_next_line.c cub3D.h)
 
 target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3d/libmlx.a)
 target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3d/libft.a)

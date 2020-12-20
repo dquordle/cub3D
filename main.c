@@ -12,6 +12,7 @@ void ft_parser(char *file)
 	line = NULL;
 	head = NULL;
 	fd = open (file, O_RDONLY);
+	get_
 
 }
 
