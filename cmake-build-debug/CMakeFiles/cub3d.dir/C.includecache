@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/dquordle/CLionProjects/cub3d/libft.h
+unistd.h
+-
+stdlib.h
+-
+
+/Users/dquordle/CLionProjects/cub3d/main.c
+stdio.h
+-
+fcntl.h
+-
+mlx.h
+/Users/dquordle/CLionProjects/cub3d/mlx.h
+libft.h
+/Users/dquordle/CLionProjects/cub3d/libft.h
+
+/Users/dquordle/CLionProjects/cub3d/mlx.h
+
