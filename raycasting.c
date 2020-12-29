@@ -58,21 +58,21 @@ int 	hooker(int keycode, t_all *all)
 	//move forward if no wall in front of you
 	if(keycode == 126)
 	{
-		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX + all->plr->dirX * moveSpeed)] == '0')
+		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX + all->plr->dirX * moveSpeed)] != '1')
 			all->plr->posX += all->plr->dirX * moveSpeed;
-		if (all->map[(int)(all->plr->posY + all->plr->dirY * moveSpeed)][(int)(all->plr->posX)] == '0')
+		if (all->map[(int)(all->plr->posY + all->plr->dirY * moveSpeed)][(int)(all->plr->posX)] != '1')
 			all->plr->posY += all->plr->dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if(keycode == 125)
 	{
-		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX - all->plr->dirX * moveSpeed)] == '0')
+		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX - all->plr->dirX * moveSpeed)] != '1')
 			all->plr->posX -= all->plr->dirX * moveSpeed;
-		if(all->map[(int)(all->plr->posY - all->plr->dirY * moveSpeed)][(int)(all->plr->posX)] == '0')
+		if(all->map[(int)(all->plr->posY - all->plr->dirY * moveSpeed)][(int)(all->plr->posX)] != '1')
 			all->plr->posY -= all->plr->dirY * moveSpeed;
 	}
 	//rotate to the right
-	if(keycode == 124)
+	if(keycode == 123)
 	{
 		//both camera direction and camera plane must be rotated
 		double oldDirX = all->plr->dirX;
@@ -83,7 +83,7 @@ int 	hooker(int keycode, t_all *all)
 		all->plr->planeY = oldPlaneX * sin(-rotSpeed) + all->plr->planeY * cos(-rotSpeed);
 	}
 	//rotate to the left
-	if(keycode == 123)
+	if(keycode == 124)
 	{
 		//both camera direction and camera plane must be rotated
 		double oldDirX = all->plr->dirX;
@@ -114,10 +114,10 @@ int main()
 
 
 	vars.mlx = mlx_init();
-	img.img = mlx_new_image(vars.mlx, 1000, 800);
+	img.img = mlx_new_image(vars.mlx, screenWidth, screenHeight);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
-	vars.win = mlx_new_window(vars.mlx, 1000, 800, "keks");
+	vars.win = mlx_new_window(vars.mlx, screenWidth, screenHeight, "keks");
 	map = ft_parser("map.cub");
 	all.vars = &vars;
 	all.plr = &player;
@@ -149,13 +149,13 @@ int main()
 		dirX = -1.0;
 		dirY = 0.0;
 		planeX = 0.0;
-		planeY = 0.66;
+		planeY = -0.66;
 	}
 	else if (all.plr->dir == 'N')
 	{
 		dirX = 0.0;
 		dirY = -1.0;
-		planeX = -1.0;
+		planeX = 1.0;
 		planeY = 0.0;
 	}
 	else if (all.plr->dir == 'E')
@@ -163,13 +163,13 @@ int main()
 		dirX = 1.0;
 		dirY = 0.0;
 		planeX = 0.0;
-		planeY = -1.0;
+		planeY = 1.0;
 	}
 	else if (all.plr->dir == 'S')
 	{
 		dirX = 0.0;
 		dirY = 1.0;
-		planeX = 0.66;
+		planeX = -0.66;
 		planeY = 0.0;
 	}
 	all.plr->dirX = dirX;
@@ -234,7 +234,7 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 	char **map;
 	t_data img;
 
-	img.img = mlx_new_image(all.vars->mlx, 1000, 800);
+	img.img = mlx_new_image(all.vars->mlx, screenWidth, screenHeight);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
 	dirX = all.plr->dirX;
@@ -330,7 +330,7 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 			drawEnd = screenHeight - 1;
 
 		//texturing calculations
-		int texNum = map[mapY][mapX] - 44; //1 subtracted from it so that texture 0 can be used!
+		int texNum = map[mapY][mapX] - 46; //1 subtracted from it so that texture 0 can be used!
 
 		//calculate value of wallX
 		double wallX; //where exactly the wall was hit
@@ -342,9 +342,9 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 
 		//x coordinate on the texture
 		int texX = (int)(wallX * (double)texWidth);
-		if(side == 0 && rayDirX > 0)
+		if (side == 0 && rayDirX > 0)
 			texX = texWidth - texX - 1;
-		if(side == 1 && rayDirY < 0)
+		if (side == 1 && rayDirY < 0)
 			texX = texWidth - texX - 1;
 
 		// How much to increase the texture coordinate per screen pixel
@@ -361,6 +361,34 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 			if (side == 1)
 				color = (color >> 1) & 8355711;
 			//buffer[y][x] = color;
+			my_mlx_pixel_put(&img, x, y, color);
+		}
+		// Floor
+		for (y = screenHeight - 1; y > drawEnd; y--)
+		{
+			// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
+//			int texY = (int)texPos & (texHeight - 1);
+//			texPos += step;
+//			int color = texture[texNum][texHeight * texY + texX];
+			int color = 1024421;
+			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
+//			if (side == 1)
+//				color = (color >> 1) & 8355711;
+			//buffer[y][x] = color;
+			my_mlx_pixel_put(&img, x, y, color);
+		}
+		// Ceiling
+		for(y = 0; y < drawStart; y++)
+		{
+			// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
+//			int texY = (int)texPos & (texHeight - 1);
+//			texPos += step;
+//			int color = texture[texNum][texHeight * texY + texX];
+//			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
+//			if (side == 1)
+//				color = (color >> 1) & 8355711;
+//			//buffer[y][x] = color;
+			int color = 21474836;
 			my_mlx_pixel_put(&img, x, y, color);
 		}
 	}

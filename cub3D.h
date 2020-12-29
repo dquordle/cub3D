@@ -5,8 +5,8 @@
 #ifndef CUB3D_CUB3D_H
 #define CUB3D_CUB3D_H
 
-#define screenWidth 1000
-#define screenHeight 800
+#define screenWidth 1920
+#define screenHeight 1080
 #define texWidth 64
 #define texHeight 64
 
