@@ -4,9 +4,15 @@
 CMakeFiles/cub3D.dir/get_next_line.c.o: ../get_next_line.c
 CMakeFiles/cub3D.dir/get_next_line.c.o: ../libft.h
 
+CMakeFiles/cub3D.dir/main.c.o: ../cub3D.h
 CMakeFiles/cub3D.dir/main.c.o: ../libft.h
 CMakeFiles/cub3D.dir/main.c.o: ../main.c
 CMakeFiles/cub3D.dir/main.c.o: ../mlx.h
+
+CMakeFiles/cub3D.dir/raycasting.c.o: ../cub3D.h
+CMakeFiles/cub3D.dir/raycasting.c.o: ../libft.h
+CMakeFiles/cub3D.dir/raycasting.c.o: ../mlx.h
+CMakeFiles/cub3D.dir/raycasting.c.o: ../raycasting.c
 
 CMakeFiles/cub3D.dir/start.c.o: ../mlx.h
 CMakeFiles/cub3D.dir/start.c.o: ../start.c

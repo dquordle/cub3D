@@ -68,10 +68,10 @@ RM = /Users/dquordle/Desktop/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/dquordle/CLionProjects/cub3d
+CMAKE_SOURCE_DIR = /Users/dquordle/CLionProjects/cub3D
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/dquordle/CLionProjects/cub3d/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/dquordle/CLionProjects/cub3D/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/dquordle/CLionProjects/cub3d/cmake-build-debug/CMakeFiles /Users/dquordle/CLionProjects/cub3d/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles /Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/dquordle/CLionProjects/cub3d/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -197,6 +197,33 @@ main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/main.c.s
 .PHONY : main.c.s
 
+raycasting.o: raycasting.c.o
+
+.PHONY : raycasting.o
+
+# target to build an object file
+raycasting.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/raycasting.c.o
+.PHONY : raycasting.c.o
+
+raycasting.i: raycasting.c.i
+
+.PHONY : raycasting.i
+
+# target to preprocess a source file
+raycasting.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/raycasting.c.i
+.PHONY : raycasting.c.i
+
+raycasting.s: raycasting.c.s
+
+.PHONY : raycasting.s
+
+# target to generate assembly for a file
+raycasting.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/raycasting.c.s
+.PHONY : raycasting.c.s
+
 start.o: start.c.o
 
 .PHONY : start.o
@@ -239,6 +266,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... raycasting.o"
+	@echo "... raycasting.i"
+	@echo "... raycasting.s"
 	@echo "... start.o"
 	@echo "... start.i"
 	@echo "... start.s"

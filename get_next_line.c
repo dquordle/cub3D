@@ -84,7 +84,7 @@ int		get_next_line(int fd, char **line)
 	{
 		if(!(rem = (char *)malloc(10000)))
 			return (-1);
-		check = read(fd, &rem, 9999);
+		check = read(fd, rem, 9999);
 		rem[check] = 0;
 	}
 	return (ft_reading(&rem, line, fd));

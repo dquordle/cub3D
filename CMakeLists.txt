@@ -1,11 +1,20 @@
 cmake_minimum_required(VERSION 3.17)
-project(cub3d C)
+project(cub3D C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(cub3D main.c start.c get_next_line.c cub3D.h)
+#include_directories(.)
 
-target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3d/libmlx.a)
-target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3d/libft.a)
+add_executable(cub3D
+        cub3D.h
+        get_next_line.c
+        libft.h
+        main.c
+        mlx.h
+        start.c
+        raycasting.c
+        )
+target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/libft.a)
+target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/libmlx.a)
 target_link_libraries(cub3D "-framework OpenGL")
 target_link_libraries(cub3D "-framework AppKit")

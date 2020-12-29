@@ -6,25 +6,27 @@
 
 #IncludeRegexTransform: 
 
-/Users/dquordle/CLionProjects/cub3d/get_next_line.c
-libft.h
-/Users/dquordle/CLionProjects/cub3d/libft.h
+/Users/dquordle/CLionProjects/cub3D/cub3D.h
 
-/Users/dquordle/CLionProjects/cub3d/libft.h
+/Users/dquordle/CLionProjects/cub3D/libft.h
 unistd.h
 -
 stdlib.h
 -
 
-/Users/dquordle/CLionProjects/cub3d/main.c
+/Users/dquordle/CLionProjects/cub3D/mlx.h
+
+/Users/dquordle/CLionProjects/cub3D/raycasting.c
 stdio.h
 -
 fcntl.h
 -
+math.h
+-
 mlx.h
-/Users/dquordle/CLionProjects/cub3d/mlx.h
+/Users/dquordle/CLionProjects/cub3D/mlx.h
 libft.h
-/Users/dquordle/CLionProjects/cub3d/libft.h
-
-/Users/dquordle/CLionProjects/cub3d/mlx.h
+/Users/dquordle/CLionProjects/cub3D/libft.h
+cub3D.h
+/Users/dquordle/CLionProjects/cub3D/cub3D.h
 
