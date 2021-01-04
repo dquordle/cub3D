@@ -224,6 +224,33 @@ raycasting.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/raycasting.c.s
 .PHONY : raycasting.c.s
 
+read_file.o: read_file.c.o
+
+.PHONY : read_file.o
+
+# target to build an object file
+read_file.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/read_file.c.o
+.PHONY : read_file.c.o
+
+read_file.i: read_file.c.i
+
+.PHONY : read_file.i
+
+# target to preprocess a source file
+read_file.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/read_file.c.i
+.PHONY : read_file.c.i
+
+read_file.s: read_file.c.s
+
+.PHONY : read_file.s
+
+# target to generate assembly for a file
+read_file.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/read_file.c.s
+.PHONY : read_file.c.s
+
 start.o: start.c.o
 
 .PHONY : start.o
@@ -269,6 +296,9 @@ help:
 	@echo "... raycasting.o"
 	@echo "... raycasting.i"
 	@echo "... raycasting.s"
+	@echo "... read_file.o"
+	@echo "... read_file.i"
+	@echo "... read_file.s"
 	@echo "... start.o"
 	@echo "... start.i"
 	@echo "... start.s"

@@ -96,7 +96,8 @@ int 	hooker(int keycode, t_all *all)
 	ft_draw(*all, all->texture);
 	if(keycode == 53)
 	{
-		all->done = 1;
+		mlx_destroy_window(all->vars->mlx, all->vars->win);
+		exit(0);
 	}
 	//mlx_put_image_to_window(all->vars->mlx, all->vars->win, all->vars-img.img, 0, 0);
 	return (0);
@@ -111,6 +112,7 @@ int main()
 	t_all all;
 	int x;
 	int y;
+	struct Sprite sprite[numSprites];
 
 
 	vars.mlx = mlx_init();
@@ -123,6 +125,7 @@ int main()
 	all.plr = &player;
 	all.map = map;
 	y = 0;
+	int n = 0;
 	while (map[y])
 	{
 		x = 0;
@@ -130,10 +133,16 @@ int main()
 		{
 			if (ft_strchr("NEWS", map[y][x]))
 			{
-				player.posX = x;
-				player.posY = y;
+				player.posX = x + 0.5;
+				player.posY = y + 0.5;
 				player.dir = map[y][x];
 				map[y][x] = '0';
+			}
+			else if (map[y][x] == '2')
+			{
+				sprite[n].x = x + 0.5;
+				sprite[n].y = y + 0.5;
+				n++;
 			}
 			x++;
 		}
@@ -178,7 +187,7 @@ int main()
 	all.plr->planeY = planeY;
 	//generate some textures
 //#if 0
-	int texture[8][texHeight * texWidth];
+	int texture[9][texHeight * texWidth];
 	for (x = 0; x < texWidth; x++)
 	{
 		for (y = 0; y < texHeight; y++)
@@ -204,6 +213,55 @@ int main()
 					128 + 256 * 128 + 65536 * 128; //flat grey texture
 		}
 	}
+	int width;
+	int height;
+	t_data  imgg;
+	char    *dst;
+
+	imgg.img = mlx_xpm_file_to_image(vars.mlx, "xpms/colorstone.xpm", &width, &height);
+	imgg.addr = mlx_get_data_addr(imgg.img, &imgg.bits_per_pixel, &imgg.line_length,
+								 &imgg.endian);
+	x = 0;
+	while (x < width)
+	{
+		y = 0;
+		while (y < height)
+		{
+			dst = imgg.addr + (y * imgg.line_length + x * (imgg.bits_per_pixel / 8));
+			texture[0][width * y + x] = *(int*)dst;
+			y++;
+		}
+		x++;
+	}
+	imgg.img = mlx_xpm_file_to_image(vars.mlx, "xpms/barrel.xpm", &width, &height);
+	imgg.addr = mlx_get_data_addr(imgg.img, &imgg.bits_per_pixel, &imgg.line_length,
+								  &imgg.endian);
+	x = 0;
+	while (x < width)
+	{
+		y = 0;
+		while (y < height)
+		{
+			dst = imgg.addr + (y * imgg.line_length + x * (imgg.bits_per_pixel / 8));
+			texture[8][width * y + x] = *(int*)dst;
+			y++;
+		}
+		x++;
+	}
+//	int *lol;
+//	lol = mlx_xpm_file_to_image(vars.mlx, "xpms/eagle.xpm", &width, &height);
+//	x = 0;
+//	while (x < width)
+//	{
+//		y = 0;
+//		while (y < height)
+//		{
+//			texture[2][width * x + y] = lol[width * y + x];
+//			y++;
+//		}
+//		x++;
+//	}
+
 //#else
 //	//generate some textures
 //	unsigned long tw, th;
@@ -219,13 +277,13 @@ int main()
 
 	//start the main loop
 	all.texture = texture;
-	all.done = 0;
+	all.sprite = sprite;
 	ft_draw(all, texture);
 	mlx_hook(all.vars->win, 2, 1L<<0, hooker, &all);
 	mlx_loop(all.vars->mlx);
 }
 
-void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
+void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 {
 	double posX = all.plr->posX, posY = all.plr->posY;  //x and y start position
 	double dirX, dirY; //initial direction vector ????
@@ -233,6 +291,9 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 	int x, y;
 	char **map;
 	t_data img;
+	double ZBuffer[screenWidth];
+	int spriteOrder[numSprites];
+	double spriteDistance[numSprites];
 
 	img.img = mlx_new_image(all.vars->mlx, screenWidth, screenHeight);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
@@ -308,7 +369,7 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 				side = 1;
 			}
 			//Check if ray has hit a wall
-			if (map[mapY][mapX] != '0')
+			if (map[mapY][mapX] == '1')
 				hit = 1;
 		}
 
@@ -330,8 +391,20 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 			drawEnd = screenHeight - 1;
 
 		//texturing calculations
-		int texNum = map[mapY][mapX] - 46; //1 subtracted from it so that texture 0 can be used!
-
+		int texNum;
+		if (map[mapY][mapX] == '1') //1 subtracted from it so that texture 0 can be used!
+		{
+			if (side == 1 && stepY == 1) //North wall
+				texNum = 0;
+			else if (side == 1 && stepY == -1) //South wall
+				texNum = 1;
+			else if (side == 0 && stepX == 1)
+				texNum = 2;
+			else
+				texNum = 3;
+		}
+		else
+			texNum = 4;
 		//calculate value of wallX
 		double wallX; //where exactly the wall was hit
 		if(side == 0)
@@ -351,7 +424,7 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 		double step = 1.0 * texHeight / lineHeight;
 		// Starting texture coordinate
 		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
-		for(y = drawStart; y < drawEnd; y++)
+		for (y = drawStart; y < drawEnd; y++)
 		{
 			// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
 			int texY = (int)texPos & (texHeight - 1);
@@ -370,7 +443,7 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 //			int texY = (int)texPos & (texHeight - 1);
 //			texPos += step;
 //			int color = texture[texNum][texHeight * texY + texX];
-			int color = 1024421;
+			int color = 0xc0c8ff; //x00DC6400;
 			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
 //			if (side == 1)
 //				color = (color >> 1) & 8355711;
@@ -388,10 +461,92 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 //			if (side == 1)
 //				color = (color >> 1) & 8355711;
 //			//buffer[y][x] = color;
-			int color = 21474836;
+			int color = 0xffdab9;
 			my_mlx_pixel_put(&img, x, y, color);
 		}
+		//SET THE ZBUFFER FOR THE SPRITE CASTING
+		ZBuffer[x] = perpWallDist; //perpendicular distance is used
 	}
+
+
+//SPRITE CASTING
+//sort sprites from far to close
+	for (int i = 0; i < numSprites; i++)
+	{
+		spriteOrder[i] = i;
+		spriteDistance[i] = ((posX - all.sprite[i].x) * (posX - all.sprite[i].x) + (posY - all.sprite[i].y) * (posY - all.sprite[i].y)); //sqrt not taken, unneeded
+	}
+	sortSprites(spriteOrder, spriteDistance, numSprites);
+
+	//after sorting the sprites, do the projection and draw them
+	for (int i = 0; i < numSprites; i++)
+	{
+	//translate sprite position to relative to camera
+		double spriteX = all.sprite[spriteOrder[i]].x - posX;
+		double spriteY = all.sprite[spriteOrder[i]].y - posY;
+
+	//transform sprite with the inverse camera matrix
+	// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+	// [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+	// [ planeY   dirY ]                                          [ -planeY  planeX ]
+
+		double invDet = 1.0 / (planeX * dirY - dirX * planeY); //required for correct matrix multiplication
+
+		double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+		double transformY = invDet * (-planeY * spriteX + planeX * spriteY); //this is actually the depth inside the screen, that what Z is in 3D, the distance of sprite to player, matching sqrt(spriteDistance[i])
+
+		int spriteScreenX = (int)((screenWidth / 2) * (1 + transformX / transformY));
+
+		//parameters for scaling and moving the sprites
+		#define uDiv 1
+		#define vDiv 1
+		#define vMove 0.0
+		int vMoveScreen = (int)(vMove / transformY);
+
+		//calculate height of the sprite on screen
+		int spriteHeight = abs((int)(screenHeight / (transformY)) / vDiv); //using "transformY" instead of the real distance prevents fisheye
+		//calculate lowest and highest pixel to fill in current stripe
+		int drawStartY = -spriteHeight / 2 + screenHeight / 2 + vMoveScreen;
+		if (drawStartY < 0)
+			drawStartY = 0;
+		int drawEndY = spriteHeight / 2 + screenHeight / 2 + vMoveScreen;
+		if (drawEndY >= screenHeight)
+			drawEndY = screenHeight - 1;
+
+		//calculate width of the sprite
+		int spriteWidth = abs((int)(screenHeight / (transformY))) / uDiv;
+		int drawStartX = -spriteWidth / 2 + spriteScreenX;
+		if (drawStartX < 0)
+			drawStartX = 0;
+		int drawEndX = spriteWidth / 2 + spriteScreenX;
+		if (drawEndX >= screenWidth)
+			drawEndX = screenWidth - 1;
+
+		//loop through every vertical stripe of the sprite on screen
+		for (int stripe = drawStartX; stripe < drawEndX; stripe++)
+		{
+			int texX = (int)(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
+			//the conditions in the if are:
+			//1) it's in front of camera plane so you don't see things behind you
+			//2) it's on the screen (left)
+			//3) it's on the screen (right)
+			//4) ZBuffer, with perpendicular distance
+			if (transformY > 0 && stripe > 0 && stripe < screenWidth && transformY < ZBuffer[stripe])
+			{
+				for (int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+				{
+					int d = (y - vMoveScreen) * 256 - screenHeight * 128 + spriteHeight *
+																128; //256 and 128 factors to avoid floats
+					int texY = ((d * texHeight) / spriteHeight) / 256;
+					int color = texture[8][texHeight * texY + texX]; //get current color from the texture
+					if ((color & 0x00FFFFFF) != 0)
+						my_mlx_pixel_put(&img, stripe, y, color); //paint pixel if it isn't black, black is the invisible color
+					//big_pixel_put(&img, 10, 10, 2134568);
+				}
+			}
+		}
+	}
+
 
 		//drawBuffer(buffer[0]);
 //
@@ -408,4 +563,26 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth])
 	mlx_put_image_to_window(all.vars->mlx, all.vars->win, img.img, 0, 0);
 
 	//speed modifiers
+}
+
+void 	sortSprites(int* order, double* dist, int amount)
+{
+	int i;
+	int temp;
+
+	while (amount > 1)
+	{
+		i = 0;
+		while (i < amount - 1)
+		{
+			if (dist[i] < dist[i + 1])
+			{
+				temp = order[i];
+				order[i] = order[i + 1];
+				order[i + 1] = temp;
+			}
+			i++;
+		}
+		amount--;
+	}
 }

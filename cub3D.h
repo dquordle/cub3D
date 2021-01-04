@@ -9,6 +9,7 @@
 #define screenHeight 1080
 #define texWidth 64
 #define texHeight 64
+#define numSprites 3
 
 typedef struct  s_vars {
 	void    *mlx;
@@ -34,18 +35,28 @@ typedef struct	s_plr
 	char		dir;
 }				  t_plr;
 
-typedef struct	s_all
+struct Sprite
 {
-	t_vars		*vars;
-	t_plr		*plr;
-	char		**map;
-	int			done;
-	int			**texture;
-}				t_all;
+	double x;
+	double y;
+};
+
+typedef struct		s_all
+{
+	t_vars			*vars;
+	t_plr			*plr;
+	char			**map;
+	int				**texture;
+	struct Sprite	*sprite;
+}					t_all;
+
+
 
 int		get_next_line(int fd, char **line);
 char	**ft_parser(char *file);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void	ft_draw(t_all all, int texture[8][texHeight * texWidth]);
+void 	sortSprites(int* order, double* dist, int amount);
+void big_pixel_put(t_data *data, int x, int y, int color);
 
 #endif //CUB3D_CUB3D_H

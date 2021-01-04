@@ -77,20 +77,20 @@ void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-//void big_pixel_put(t_data *data, int x, int y, int color)
-//{
-//	int sx;
-//	int sy;
-//
-//	sx = x * SCALE;
-//	while (sx < (x + 1) * SCALE)
-//	{
-//		sy = y * SCALE;
-//		while (sy < (y + 1) * SCALE)
-//			my_mlx_pixel_put(data, sx, sy++, color);
-//		sx++;
-//	}
-//}
+void big_pixel_put(t_data *data, int x, int y, int color)
+{
+	int sx;
+	int sy;
+
+	sx = x * SCALE;
+	while (sx < (x + 1) * SCALE)
+	{
+		sy = y * SCALE;
+		while (sy < (y + 1) * SCALE)
+			my_mlx_pixel_put(data, sx, sy++, color);
+		sx++;
+	}
+}
 
 //void player_put(t_data *data, float x, float y, int color)
 //{
