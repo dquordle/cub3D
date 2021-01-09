@@ -16,6 +16,11 @@ CMakeFiles/cub3D.dir/raycasting.c.o: ../raycasting.c
 
 CMakeFiles/cub3D.dir/read_file.c.o: ../read_file.c
 
+CMakeFiles/cub3D.dir/screenshot.c.o: ../cub3D.h
+CMakeFiles/cub3D.dir/screenshot.c.o: ../libft.h
+CMakeFiles/cub3D.dir/screenshot.c.o: ../mlx.h
+CMakeFiles/cub3D.dir/screenshot.c.o: ../screenshot.c
+
 CMakeFiles/cub3D.dir/start.c.o: ../mlx.h
 CMakeFiles/cub3D.dir/start.c.o: ../start.c
 

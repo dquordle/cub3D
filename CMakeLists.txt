@@ -14,8 +14,9 @@ add_executable(cub3D
         start.c
         raycasting.c
         read_file.c
+        screenshot.c
         )
 target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/libft.a)
-target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/libmlx.a)
+target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/cmake-build-debug/libmlx.dylib)
 target_link_libraries(cub3D "-framework OpenGL")
 target_link_libraries(cub3D "-framework AppKit")

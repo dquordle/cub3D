@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/Users/dquordle/CLionProjects/cub3D/main.c" "/Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles/cub3D.dir/main.c.o"
   "/Users/dquordle/CLionProjects/cub3D/raycasting.c" "/Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles/cub3D.dir/raycasting.c.o"
   "/Users/dquordle/CLionProjects/cub3D/read_file.c" "/Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles/cub3D.dir/read_file.c.o"
+  "/Users/dquordle/CLionProjects/cub3D/screenshot.c" "/Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles/cub3D.dir/screenshot.c.o"
   "/Users/dquordle/CLionProjects/cub3D/start.c" "/Users/dquordle/CLionProjects/cub3D/cmake-build-debug/CMakeFiles/cub3D.dir/start.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")

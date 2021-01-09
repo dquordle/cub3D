@@ -99,6 +99,9 @@
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/read_file.c">
 			<Option target="cub3D"/>
 		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/screenshot.c">
+			<Option target="cub3D"/>
+		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/start.c">
 			<Option target="cub3D"/>
 		</Unit>

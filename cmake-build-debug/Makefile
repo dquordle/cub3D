@@ -251,6 +251,33 @@ read_file.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/read_file.c.s
 .PHONY : read_file.c.s
 
+screenshot.o: screenshot.c.o
+
+.PHONY : screenshot.o
+
+# target to build an object file
+screenshot.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/screenshot.c.o
+.PHONY : screenshot.c.o
+
+screenshot.i: screenshot.c.i
+
+.PHONY : screenshot.i
+
+# target to preprocess a source file
+screenshot.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/screenshot.c.i
+.PHONY : screenshot.c.i
+
+screenshot.s: screenshot.c.s
+
+.PHONY : screenshot.s
+
+# target to generate assembly for a file
+screenshot.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/screenshot.c.s
+.PHONY : screenshot.c.s
+
 start.o: start.c.o
 
 .PHONY : start.o
@@ -299,6 +326,9 @@ help:
 	@echo "... read_file.o"
 	@echo "... read_file.i"
 	@echo "... read_file.s"
+	@echo "... screenshot.o"
+	@echo "... screenshot.i"
+	@echo "... screenshot.s"
 	@echo "... start.o"
 	@echo "... start.i"
 	@echo "... start.s"

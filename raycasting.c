@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <fcntl.h>
-#include <math.h>
-#include "mlx.h"
-#include "libft.h"
 #include "cub3D.h"
 
 //#define screenWidth 640
@@ -56,7 +51,7 @@ int 	hooker(int keycode, t_all *all)
 	double rotSpeed = 0.03 * 3.0; //the constant value is in radians/second
 
 	//move forward if no wall in front of you
-	if(keycode == 126)
+	if (keycode == 126 || keycode == 13)
 	{
 		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX + all->plr->dirX * moveSpeed)] != '1')
 			all->plr->posX += all->plr->dirX * moveSpeed;
@@ -64,15 +59,29 @@ int 	hooker(int keycode, t_all *all)
 			all->plr->posY += all->plr->dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
-	if(keycode == 125)
+	if (keycode == 125 || keycode == 1)
 	{
 		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX - all->plr->dirX * moveSpeed)] != '1')
 			all->plr->posX -= all->plr->dirX * moveSpeed;
 		if(all->map[(int)(all->plr->posY - all->plr->dirY * moveSpeed)][(int)(all->plr->posX)] != '1')
 			all->plr->posY -= all->plr->dirY * moveSpeed;
 	}
+	if (keycode == 0)
+	{
+		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX - all->plr->planeX * moveSpeed)] != '1')
+			all->plr->posX -= all->plr->planeX * moveSpeed;
+		if(all->map[(int)(all->plr->posY - all->plr->planeY * moveSpeed)][(int)(all->plr->posX)] != '1')
+			all->plr->posY -= all->plr->planeY * moveSpeed;
+	}
+	if (keycode == 2)
+	{
+		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX + all->plr->planeX * moveSpeed)] != '1')
+			all->plr->posX += all->plr->planeX * moveSpeed;
+		if(all->map[(int)(all->plr->posY + all->plr->planeY * moveSpeed)][(int)(all->plr->posX)] != '1')
+			all->plr->posY += all->plr->planeY * moveSpeed;
+	}
 	//rotate to the right
-	if(keycode == 123)
+	if (keycode == 123)
 	{
 		//both camera direction and camera plane must be rotated
 		double oldDirX = all->plr->dirX;
@@ -83,7 +92,7 @@ int 	hooker(int keycode, t_all *all)
 		all->plr->planeY = oldPlaneX * sin(-rotSpeed) + all->plr->planeY * cos(-rotSpeed);
 	}
 	//rotate to the left
-	if(keycode == 124)
+	if (keycode == 124)
 	{
 		//both camera direction and camera plane must be rotated
 		double oldDirX = all->plr->dirX;
@@ -278,7 +287,14 @@ int main()
 	//start the main loop
 	all.texture = texture;
 	all.sprite = sprite;
+
+//	int w;
+//	int h;
+//	mlx_get_screen_size(all.vars->mlx, &w, &h);
+//	printf("%d, %d\n", w, h);
+//	mlx_do_key_autorepeatoff(all.vars->mlx);
 	ft_draw(all, texture);
+	ft_screenshot(all);
 	mlx_hook(all.vars->win, 2, 1L<<0, hooker, &all);
 	mlx_loop(all.vars->mlx);
 }
@@ -295,6 +311,7 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 	int spriteOrder[numSprites];
 	double spriteDistance[numSprites];
 
+	all.vars->img = &img;
 	img.img = mlx_new_image(all.vars->mlx, screenWidth, screenHeight);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
@@ -304,7 +321,7 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 	planeY = all.plr->planeY;
 	map = all.map;
 
-	for(x = 0; x < screenWidth; x++)
+	for (x = 0; x < screenWidth; x++)
 	{
 		//calculate ray position and direction
 		double cameraX = 2 * x / (double)screenWidth - 1; //x-coordinate in camera space
