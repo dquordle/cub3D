@@ -6,39 +6,149 @@
 
 #define SCALE 50
 
-void ft_cut_conf(t_list **head)
+void	ft_floor_ceil(char *line, t_conf *conf)
 {
-	char	**map;
-	int 	i;
-	char	*tmp;
-	int 	flag;
-	//do something with configurations, probably put em in some struct, idk
-	flag = 1;
-	while (flag)
+	int color;
+	int flag;
+
+	flag = 0;
+	if (line[0] == 'F')
+		flag = 1;
+	line++;
+	while (*line == ' ')
+		line++;
+	color = ft_atoi(line) * 256 * 256;
+	while (ft_isdigit(*line))
+		line++;
+	while (*line == ' ' || *line == ',')
+		line++;
+	color += ft_atoi(line) * 256;
+	while (ft_isdigit(*line))
+		line++;
+	while (*line == ' ' || *line == ',')
+		line++;
+	color += ft_atoi(line);
+	if (flag)
+		conf->floor = color;
+	else
+		conf->ceiling = color;
+}
+
+void	ft_walls(char *line, t_conf *conf)
+{
+	int i;
+
+	i = 2;
+	while (line[i] == ' ')
+		i++;
+	if (line[0] == 'N' && line[1] == 'O')
+		conf->ntext = line + i;
+	else if (line[0] == 'S' && line[1] == 'O')
+		conf->stext = line + i;
+	else if (line[0] == 'W' && line[1] == 'E')
+		conf->wtext = line + i;
+	else if (line[0] == 'E' && line[1] == 'A')
+		conf->etext = line + i;
+	else if (line[0] == 'S' && line[1] == ' ')
+		conf->sprite = line + i;
+}
+
+void	ft_conf(char *line, t_conf *conf)
+{
+	if (*line == 'R')
 	{
-		i = 0;
-		tmp = (char *)((*head)->content);
-		while (tmp[i] == ' ' || ft_isdigit(tmp[i]))
-			i++;
-		if (!tmp[i] && i)
-			flag = 0;
+		while (!ft_isdigit(*line))
+			line++;
+		conf->width = ft_atoi(line);
+		while (ft_isdigit(*line))
+			line++;
+		while (*line == ',' || *line == ' ')
+			line++;
+		conf->height = ft_atoi(line);
+	}
+	else if (*line == 'F' || *line == 'C')
+		ft_floor_ceil(line, conf);
+	else
+		ft_walls(line, conf);
+}
+
+void ft_cut_conf(t_list **head, t_all *all)
+{
+	t_list *tmp;
+	char *line;
+	int i;
+	t_conf *conf;
+
+	conf = malloc(sizeof(t_conf));
+	all->conf = conf;
+	while (*head)
+	{
+		line = (char *)((*head)->content);
+		if (ft_isalpha(line[0]))
+			ft_conf(line, conf);
 		else
-			*head = (*head)->next;
+		{
+			i = 0;
+			while (line[i] == ' ' || line[i] == '1')
+				i++;
+			if (!line[i] && i)
+				break;
+		}
+		tmp = *head;
+		(*head) = (*head)->next;
+		free(tmp);
 	}
 }
 
-char	**ft_parser(char *file)
+//void ft_cut_conf(t_list **head)
+//{
+//	char	**map;
+//	int 	i;
+//	char	*tmp;
+//	int 	flag;
+//	//do something with configurations, probably put em in some struct, idk
+//	flag = 1;
+//	while (flag)
+//	{
+//		i = 0;
+//		tmp = (char *)((*head)->content);
+//		while (tmp[i] == ' ' || ft_isdigit(tmp[i]))
+//			i++;
+//		if (!tmp[i] && i)
+//			flag = 0;
+//		else
+//			*head = (*head)->next;
+//	}
+//}
+
+void	ft_make_map(t_list **head, t_all *all)
+{
+	char **map;
+	int i;
+	t_list *tmp;
+
+	map = ft_calloc(ft_lstsize(*head) + 1, sizeof(char *));
+	i = 0;
+	while (*head)
+	{
+		map[i++] = (*head)->content;
+		tmp = *head;
+		*head = (*head)->next;
+		free(tmp);
+	}
+	all->map = map;
+}
+
+void	ft_parser(char *file, t_all *all)
 {
 	int fd;
 	t_list *head;
 	t_list *tmp;
 	char *line;
-	char **map;
-	int i;
 
 	line = NULL;
 	head = NULL;
-	fd = open(file, O_RDONLY);
+	fd = open(file, O_RDONLY); // check
 	while (get_next_line(fd, &line))
 	{
 		tmp = ft_lstnew(line);
@@ -46,28 +156,11 @@ char	**ft_parser(char *file)
 	}
 	tmp = ft_lstnew(line);
 	ft_lstadd_back(&head, tmp);
-	ft_cut_conf(&head);
-	map = ft_calloc(ft_lstsize(head) + 1, sizeof(char *));
-	i = 0;
-	while (head)
-	{
-		map[i++] = head->content;
-		tmp = head;
-		head = head->next;
-		free(tmp);
-	}
-	i = 0;
-	while (map[i])
-	{
-		ft_putstr_fd(map[i++], 1);
-		ft_putstr_fd("\n", 1);
-	}
+	//check for validacity
+	ft_cut_conf(&head, all);
+	ft_make_map(&head, all);
 	close(fd);
-	return (map);
 }
-
-
-
 
 void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -77,20 +170,26 @@ void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void big_pixel_put(t_data *data, int x, int y, int color)
-{
-	int sx;
-	int sy;
 
-	sx = x * SCALE;
-	while (sx < (x + 1) * SCALE)
-	{
-		sy = y * SCALE;
-		while (sy < (y + 1) * SCALE)
-			my_mlx_pixel_put(data, sx, sy++, color);
-		sx++;
-	}
-}
+//int main(int argc, char **argv)
+//{
+//
+//}
+
+//void big_pixel_put(t_data *data, int x, int y, int color)
+//{
+//	int sx;
+//	int sy;
+//
+//	sx = x * SCALE;
+//	while (sx < (x + 1) * SCALE)
+//	{
+//		sy = y * SCALE;
+//		while (sy < (y + 1) * SCALE)
+//			my_mlx_pixel_put(data, sx, sy++, color);
+//		sx++;
+//	}
+//}
 
 //void player_put(t_data *data, float x, float y, int color)
 //{

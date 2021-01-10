@@ -123,16 +123,25 @@ int main()
 	int y;
 	struct Sprite sprite[numSprites];
 
-
+	ft_parser("map.cub", &all);
 	vars.mlx = mlx_init();
-	img.img = mlx_new_image(vars.mlx, screenWidth, screenHeight);
+	img.img = mlx_new_image(vars.mlx, all.conf->width, all.conf->width);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
-	vars.win = mlx_new_window(vars.mlx, screenWidth, screenHeight, "keks");
-	map = ft_parser("map.cub");
+	vars.win = mlx_new_window(vars.mlx, all.conf->width, all.conf->height, "keks");
+	printf("%d\n", all.conf->width);
+	printf("%d\n", all.conf->height);
+	printf("%s\n", all.conf->ntext);
+	printf("%s\n", all.conf->wtext);
+	printf("%s\n", all.conf->etext);
+	printf("%s\n", all.conf->stext);
+	printf("%s\n", all.conf->sprite);
+	printf("%d\n", all.conf->floor);
+	printf("%d\n", all.conf->ceiling);
 	all.vars = &vars;
 	all.plr = &player;
-	all.map = map;
+	//all.map = map;
+	map = all.map;
 	y = 0;
 	int n = 0;
 	while (map[y])

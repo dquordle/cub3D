@@ -11,8 +11,8 @@
 #include "mlx.h"
 #include "libft.h"
 
-#define screenWidth 1920
-#define screenHeight 1080
+#define screenWidth 640
+#define screenHeight 480
 #define texWidth 64
 #define texHeight 64
 #define numSprites 3
@@ -49,6 +49,19 @@ struct Sprite
 	double y;
 };
 
+typedef struct	s_conf
+{
+	int 		width;
+	int 		height;
+	char 		*ntext;
+	char		*stext;
+	char 		*etext;
+	char		*wtext;
+	char 		*sprite;
+	int			floor;
+	int 		ceiling;
+}				t_conf;
+
 typedef struct		s_all
 {
 	t_vars			*vars;
@@ -56,12 +69,13 @@ typedef struct		s_all
 	char			**map;
 	int				**texture;
 	struct Sprite	*sprite;
+	t_conf			*conf;
 }					t_all;
 
 
 
 int		get_next_line(int fd, char **line);
-char	**ft_parser(char *file);
+void	ft_parser(char *file, t_all *all);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void	ft_draw(t_all all, int texture[8][texHeight * texWidth]);
 void 	sortSprites(int* order, double* dist, int amount);
