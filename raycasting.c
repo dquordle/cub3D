@@ -1,52 +1,7 @@
 #include "cub3D.h"
 
-//#define screenWidth 640
-//#define screenHeight 480
-//#define texWidth 64
-//#define texHeight 64
-#define mapWidth 24
-#define mapHeight 24
-
-//int worldMap[mapWidth][mapHeight]=
-//		{
-//				{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7},
-//				{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
-//				{4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-//				{4,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-//				{4,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
-//				{4,0,4,0,0,0,0,5,5,5,5,5,5,5,5,5,7,7,0,7,7,7,7,7},
-//				{4,0,5,0,0,0,0,5,0,5,0,5,0,5,0,5,7,0,0,0,7,7,7,1},
-//				{4,0,6,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8},
-//				{4,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,1},
-//				{4,0,8,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8},
-//				{4,0,0,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,7,7,7,1},
-//				{4,0,0,0,0,0,0,5,5,5,5,0,5,5,5,5,7,7,7,7,7,7,7,1},
-//				{6,6,6,6,6,6,6,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6},
-//				{8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
-//				{6,6,6,6,6,6,0,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6},
-//				{4,4,4,4,4,4,0,4,4,4,6,0,6,2,2,2,2,2,2,2,3,3,3,3},
-//				{4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2},
-//				{4,0,0,0,0,0,0,0,0,0,0,0,6,2,0,0,5,0,0,2,0,0,0,2},
-//				{4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2},
-//				{4,0,6,0,6,0,0,0,0,4,6,0,0,0,0,0,5,0,0,0,0,0,0,2},
-//				{4,0,0,5,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2},
-//				{4,0,6,0,6,0,0,0,0,4,6,0,6,2,0,0,5,0,0,2,0,0,0,2},
-//				{4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2},
-//				{4,4,4,4,4,4,4,4,4,4,1,1,1,2,2,2,2,2,2,3,3,3,3,3}
-//		};
-
-//int buffer[screenHeight][screenWidth];
-
 int 	hooker(int keycode, t_all *all)
 {
-//	if (keycode == 124)
-//		all->plr->x += 1.0/SCALE;
-//	else if (keycode == 123)
-//		all->plr->x -= 1.0/SCALE;
-//	else if (keycode == 126)
-//		all->plr->y -= 1.0/SCALE;
-//	else if (keycode == 125)
-//		all->plr->y += 1.0/SCALE;
 	double moveSpeed = 0.03 * 5.0; //the constant value is in squares/second
 	double rotSpeed = 0.03 * 3.0; //the constant value is in radians/second
 
@@ -103,7 +58,7 @@ int 	hooker(int keycode, t_all *all)
 		all->plr->planeY = oldPlaneX * sin(rotSpeed) + all->plr->planeY * cos(rotSpeed);
 	}
 	ft_draw(*all, all->texture);
-	if(keycode == 53)
+	if (keycode == 53)
 	{
 		mlx_destroy_window(all->vars->mlx, all->vars->win);
 		exit(0);
@@ -112,7 +67,32 @@ int 	hooker(int keycode, t_all *all)
 	return (0);
 }
 
-int main()
+//int main(int argc, char **argv)
+//{
+//	t_all all;
+//	t_conf *conf;
+//
+//	if (argc < 2 || argc > 3)
+//		ft_error(8);
+//	else if (argc == 3 && ft_strncmp(argv[2], "--save", 7))
+//		ft_error(8);
+//	if (!(conf = malloc(sizeof(t_conf))))
+//		ft_error(1);
+//	all.conf = conf;
+//	ft_parser(argv[1], &all);
+//	ft_draw();
+//	if (argc == 2)
+//	{
+//		mlx_new_window();
+//		put_image_to_win();
+//		hook;
+//		loop;
+//	}
+//	else
+//		ft_screenshot();
+//}
+
+int main(int argc, char **argv)
 {
 	t_data img;
 	char **map;
@@ -122,22 +102,27 @@ int main()
 	int x;
 	int y;
 	struct Sprite sprite[numSprites];
+	t_conf *conf;
 
-	ft_parser("map.cub", &all);
+	if (!(conf = malloc(sizeof(t_conf))))
+		ft_error(1);
+	all.conf = conf;
+
+	ft_parser(argv[1], &all);
 	vars.mlx = mlx_init();
 	img.img = mlx_new_image(vars.mlx, all.conf->width, all.conf->width);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
 	vars.win = mlx_new_window(vars.mlx, all.conf->width, all.conf->height, "keks");
-	printf("%d\n", all.conf->width);
-	printf("%d\n", all.conf->height);
-	printf("%s\n", all.conf->ntext);
-	printf("%s\n", all.conf->wtext);
-	printf("%s\n", all.conf->etext);
-	printf("%s\n", all.conf->stext);
-	printf("%s\n", all.conf->sprite);
-	printf("%d\n", all.conf->floor);
-	printf("%d\n", all.conf->ceiling);
+//	printf("%d\n", all.conf->width);
+//	printf("%d\n", all.conf->height);
+//	printf("%s\n", all.conf->ntext);
+//	printf("%s\n", all.conf->wtext);
+//	printf("%s\n", all.conf->etext);
+//	printf("%s\n", all.conf->stext);
+//	printf("%s\n", all.conf->sprite);
+//	printf("%d\n", all.conf->floor);
+//	printf("%d\n", all.conf->ceiling);
 	all.vars = &vars;
 	all.plr = &player;
 	//all.map = map;
@@ -591,10 +576,11 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 	//speed modifiers
 }
 
-void 	sortSprites(int* order, double* dist, int amount)
+void 	sortSprites(int *order, double *dist, int amount)
 {
 	int i;
 	int temp;
+	double dtemp;
 
 	while (amount > 1)
 	{
@@ -606,6 +592,9 @@ void 	sortSprites(int* order, double* dist, int amount)
 				temp = order[i];
 				order[i] = order[i + 1];
 				order[i + 1] = temp;
+				dtemp = dist[i];
+				dist[i] = dist[i + 1];
+				dist[i + 1] = dtemp;
 			}
 			i++;
 		}

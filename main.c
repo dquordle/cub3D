@@ -1,10 +1,33 @@
-#include <stdio.h>
-#include <fcntl.h>
-#include "mlx.h"
-#include "libft.h"
 #include "cub3D.h"
 
 #define SCALE 50
+
+void	ft_check_fyc(char *line)
+{
+	int i;
+
+	i = 1;
+	while (line[i] == ' ')
+		i++;
+	if (ft_atoi(line + i) < 0 || ft_atoi(line + i) > 255)
+		ft_error(5);
+	while (ft_isdigit(line[i]))
+		i++;
+	while (line[i] == ' ' || line[i] == ',')
+		i++;
+	if (ft_atoi(line + i) < 0 || ft_atoi(line + i) > 255)
+		ft_error(5);
+	while (ft_isdigit(line[i]))
+		i++;
+	while (line[i] == ' ' || line[i] == ',')
+		i++;
+	if (ft_atoi(line + i) < 0 || ft_atoi(line + i) > 255)
+		ft_error(5);
+	while (ft_isdigit(line[i]))
+		i++;
+	if (line[i])
+		ft_error(5);
+}
 
 void	ft_floor_ceil(char *line, t_conf *conf)
 {
@@ -37,10 +60,14 @@ void	ft_floor_ceil(char *line, t_conf *conf)
 void	ft_walls(char *line, t_conf *conf)
 {
 	int i;
+	int fd;
 
 	i = 2;
 	while (line[i] == ' ')
 		i++;
+	if ((fd = open(line + i, O_RDONLY)) == -1)
+		ft_error(6);
+	close(fd);
 	if (line[0] == 'N' && line[1] == 'O')
 		conf->ntext = line + i;
 	else if (line[0] == 'S' && line[1] == 'O')
@@ -51,41 +78,48 @@ void	ft_walls(char *line, t_conf *conf)
 		conf->etext = line + i;
 	else if (line[0] == 'S' && line[1] == ' ')
 		conf->sprite = line + i;
+	else
+		ft_error(3);
 }
 
 void	ft_conf(char *line, t_conf *conf)
 {
 	if (*line == 'R')
 	{
-		while (!ft_isdigit(*line))
+		line++;
+		while (*line == ' ')
 			line++;
 		conf->width = ft_atoi(line);
 		while (ft_isdigit(*line))
 			line++;
-		while (*line == ',' || *line == ' ')
+		while (*line == ' ')
 			line++;
 		conf->height = ft_atoi(line);
+		while (ft_isdigit(*line))
+			line++;
+		if (conf->height <= 0 || conf->width <= 0 || *line)
+			ft_error(4);
 	}
 	else if (*line == 'F' || *line == 'C')
+	{
+		ft_check_fyc(line);
 		ft_floor_ceil(line, conf);
+	}
 	else
 		ft_walls(line, conf);
 }
 
-void ft_cut_conf(t_list **head, t_all *all)
+void	ft_cut_conf(t_list **head, t_all *all)
 {
 	t_list *tmp;
 	char *line;
 	int i;
-	t_conf *conf;
 
-	conf = malloc(sizeof(t_conf));
-	all->conf = conf;
 	while (*head)
 	{
 		line = (char *)((*head)->content);
 		if (ft_isalpha(line[0]))
-			ft_conf(line, conf);
+			ft_conf(line, all->conf);
 		else
 		{
 			i = 0;
@@ -93,6 +127,8 @@ void ft_cut_conf(t_list **head, t_all *all)
 				i++;
 			if (!line[i] && i)
 				break;
+			else if (line[i])
+				ft_error(3);
 		}
 		tmp = *head;
 		(*head) = (*head)->next;
@@ -100,26 +136,48 @@ void ft_cut_conf(t_list **head, t_all *all)
 	}
 }
 
-//void ft_cut_conf(t_list **head)
-//{
-//	char	**map;
-//	int 	i;
-//	char	*tmp;
-//	int 	flag;
-//	//do something with configurations, probably put em in some struct, idk
-//	flag = 1;
-//	while (flag)
-//	{
-//		i = 0;
-//		tmp = (char *)((*head)->content);
-//		while (tmp[i] == ' ' || ft_isdigit(tmp[i]))
-//			i++;
-//		if (!tmp[i] && i)
-//			flag = 0;
-//		else
-//			*head = (*head)->next;
-//	}
-//}
+void	ft_check_spaces(char **map, int i, int j)
+{
+	if (i == 0 || j == 0)
+		ft_error(7);
+	if (!(map[i + 1]) || !(map[i][j + 1]))
+		ft_error(7);
+	if (ft_strlen(map[i - 1]) <= j || ft_strlen(map[i + 1]) <= j)
+		ft_error(7);
+	if (map[i - 1][j] == ' ' || map[i + 1][j] == ' ')
+		ft_error(7);
+	if (map[i][j - 1] == ' ' || map[i][j + 1] == ' ')
+		ft_error(7);
+}
+
+void	ft_check_map(char **map)
+{
+	int i;
+	int j;
+	int flag;
+
+	i = 0;
+	flag = -1;
+	while (map[i])
+	{
+		j = 0;
+		if (!map[i][j])
+			ft_error(7);
+		while (map[i][j])
+		{
+			if (!(ft_strchr(" 012NEWS", map[i][j])))
+				ft_error(7);
+			if (ft_strchr("02NEWS", map[i][j]))
+				ft_check_spaces(map, i, j);
+			if (ft_strchr("NEWS", map[i][j]))
+				flag++;
+			j++;
+		}
+		i++;
+	}
+	if (flag)
+		ft_error(7);
+}
 
 void	ft_make_map(t_list **head, t_all *all)
 {
@@ -136,6 +194,7 @@ void	ft_make_map(t_list **head, t_all *all)
 		*head = (*head)->next;
 		free(tmp);
 	}
+	ft_check_map(map);
 	all->map = map;
 }
 
@@ -148,7 +207,8 @@ void	ft_parser(char *file, t_all *all)
 
 	line = NULL;
 	head = NULL;
-	fd = open(file, O_RDONLY); // check
+	if ((fd = open(file, O_RDONLY)) == -1)
+		ft_error(2);
 	while (get_next_line(fd, &line))
 	{
 		tmp = ft_lstnew(line);
@@ -156,13 +216,12 @@ void	ft_parser(char *file, t_all *all)
 	}
 	tmp = ft_lstnew(line);
 	ft_lstadd_back(&head, tmp);
-	//check for validacity
 	ft_cut_conf(&head, all);
 	ft_make_map(&head, all);
 	close(fd);
 }
 
-void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char    *dst;
 

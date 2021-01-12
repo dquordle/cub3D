@@ -15,6 +15,7 @@ add_executable(cub3D
         raycasting.c
         read_file.c
         screenshot.c
+        errors.c
         )
 target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/libft.a)
 target_link_libraries(cub3D /Users/dquordle/CLionProjects/cub3D/cmake-build-debug/libmlx.dylib)

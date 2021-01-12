@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/cub3D.dir/errors.c.o"
   "CMakeFiles/cub3D.dir/get_next_line.c.o"
   "CMakeFiles/cub3D.dir/main.c.o"
   "CMakeFiles/cub3D.dir/raycasting.c.o"

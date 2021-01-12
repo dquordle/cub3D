@@ -81,6 +81,9 @@
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/cub3D.h">
 			<Option target="cub3D"/>
 		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/errors.c">
+			<Option target="cub3D"/>
+		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/get_next_line.c">
 			<Option target="cub3D"/>
 		</Unit>

@@ -5,14 +5,15 @@
 #ifndef CUB3D_CUB3D_H
 #define CUB3D_CUB3D_H
 
+#include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
 #include "mlx.h"
 #include "libft.h"
 
-#define screenWidth 640
-#define screenHeight 480
+#define screenWidth 1920
+#define screenHeight 1080
 #define texWidth 64
 #define texHeight 64
 #define numSprites 3
@@ -81,5 +82,6 @@ void	ft_draw(t_all all, int texture[8][texHeight * texWidth]);
 void 	sortSprites(int* order, double* dist, int amount);
 //void big_pixel_put(t_data *data, int x, int y, int color);
 void 	ft_screenshot(t_all all);
+void	ft_error(int er_type);
 
 #endif //CUB3D_CUB3D_H
