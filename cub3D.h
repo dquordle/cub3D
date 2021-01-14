@@ -44,11 +44,11 @@ typedef struct	s_plr
 	char		dir;
 }				  t_plr;
 
-struct Sprite
+typedef struct	s_sprite
 {
 	double x;
 	double y;
-};
+}				t_sprite;
 
 typedef struct	s_conf
 {
@@ -61,6 +61,7 @@ typedef struct	s_conf
 	char 		*sprite;
 	int			floor;
 	int 		ceiling;
+	int			numsprites;
 }				t_conf;
 
 typedef struct		s_all
@@ -69,7 +70,7 @@ typedef struct		s_all
 	t_plr			*plr;
 	char			**map;
 	int				**texture;
-	struct Sprite	*sprite;
+	t_sprite		*sprite;
 	t_conf			*conf;
 }					t_all;
 
@@ -78,10 +79,13 @@ typedef struct		s_all
 int		get_next_line(int fd, char **line);
 void	ft_parser(char *file, t_all *all);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-void	ft_draw(t_all all, int texture[8][texHeight * texWidth]);
+void	ft_draw(t_all *all, int **texture);
 void 	sortSprites(int* order, double* dist, int amount);
 //void big_pixel_put(t_data *data, int x, int y, int color);
 void 	ft_screenshot(t_all all);
 void	ft_error(int er_type);
+void	ft_parse_map(t_all *all);
+void	ft_set_player(t_all *all);
+void	ft_make_textures(t_all *all);
 
 #endif //CUB3D_CUB3D_H

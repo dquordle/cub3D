@@ -204,7 +204,11 @@ void	ft_parser(char *file, t_all *all)
 	t_list *head;
 	t_list *tmp;
 	char *line;
+	t_conf *conf;
 
+	if (!(conf = malloc(sizeof(t_conf))))
+		ft_error(1);
+	all->conf = conf;
 	line = NULL;
 	head = NULL;
 	if ((fd = open(file, O_RDONLY)) == -1)
@@ -229,11 +233,132 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
+void	ft_set_player(t_all *all)
+{
+	if (all->plr->dir == 'W')
+	{
+		all->plr->dirX = (float)-1.0;
+		all->plr->dirY = (float)0.0;
+	}
+	else if (all->plr->dir == 'N')
+	{
+		all->plr->dirX = (float)0.0;
+		all->plr->dirY = (float)-1.0;
+	}
+	else if (all->plr->dir == 'E')
+	{
+		all->plr->dirX = (float)1.0;
+		all->plr->dirY = (float)0.0;
+	}
+	else if (all->plr->dir == 'S')
+	{
+		all->plr->dirX = (float)0.0;
+		all->plr->dirY = (float)1.0;
+	}
+	all->plr->planeX = all->plr->dirY * (float)(-0.66);
+	all->plr->planeY = all->plr->dirX * (float)0.66;
+}
 
-//int main(int argc, char **argv)
-//{
-//
-//}
+void	ft_parse_sprites(t_all *all, int n)
+{
+	int x;
+	int y;
+	t_sprite *sprite;
+
+	sprite = (t_sprite *)malloc(sizeof(t_sprite) * n);
+	all->sprite = sprite;
+	y = -1;
+	while (all->map[++y])
+	{
+		x = -1;
+		while (all->map[y][++x])
+		{
+			if (all->map[y][x] == '2')
+			{
+				n--;
+				sprite[n].x = x + 0.5;
+				sprite[n].y = y + 0.5;
+			}
+		}
+	}
+}
+
+void	ft_parse_map(t_all *all)
+{
+	int x;
+	int y;
+	int n;
+
+	all->plr = (t_plr *)malloc(sizeof(t_plr));
+	y = -1;
+	n = 0;
+	while (all->map[++y])
+	{
+		x = -1;
+		while (all->map[y][++x])
+		{
+			if (ft_strchr("NEWS", all->map[y][x]))
+			{
+				all->plr->posX = (float)x + 0.5;
+				all->plr->posY = (float)y + 0.5;
+				all->plr->dir = all->map[y][x];
+				all->map[y][x] = '0';
+			}
+			else if (all->map[y][x] == '2')
+				n++;
+		}
+	}
+	all->conf->numsprites = n;
+	ft_parse_sprites(all, n);
+}
+
+int		*ft_texture_to_array(t_data *img, int width, int height)
+{
+	int x;
+	int y;
+	char    *dst;
+	int		*texture;
+
+	texture = (int *)malloc(sizeof(int) * width * height);
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length,
+								 &img->endian);
+	x = 0;
+	while (x < width)
+	{
+		y = 0;
+		while (y < height)
+		{
+			dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+			texture[width * y + x] = *(int *) dst;
+			y++;
+		}
+		x++;
+	}
+	return (texture);
+}
+
+void	ft_make_textures(t_all *all)
+{
+	int		**textures;
+	t_data  img;
+	int width;
+	int height;
+
+	textures = (int **)malloc(sizeof(int *) * 5);
+	all->vars->mlx = mlx_init();
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->ntext, &width, &height);
+	textures[0] = ft_texture_to_array(&img, width, height);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->stext, &width, &height);
+	textures[1] = ft_texture_to_array(&img, width, height);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->wtext, &width, &height);
+	textures[2] = ft_texture_to_array(&img, width, height);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->etext, &width, &height);
+	textures[3] = ft_texture_to_array(&img, width, height);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->sprite, &width, &height);
+	textures[4] = ft_texture_to_array(&img, width, height);
+	mlx_destroy_image(all->vars->mlx, img.img);
+	all->texture = textures;
+}
 
 //void big_pixel_put(t_data *data, int x, int y, int color)
 //{
@@ -265,7 +390,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 //	}
 //}
 
-//void	draw_picture(char **map, t_vars vars, t_plr *player)
+//void	draw_picture(char **map, t_vars vars, t_plr *player)      2D MAP ? :/
 //{
 //	t_data  img;
 //	int x;
@@ -293,27 +418,6 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 //	player_put(&img, player->x, player->y, 0x000000FF);
 //	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
 //}
-
-//int 	hooker(int keycode, t_all *all)
-//{
-//	if (keycode == 124)
-//		all->plr->x += 1.0/SCALE;
-//	else if (keycode == 123)
-//		all->plr->x -= 1.0/SCALE;
-//	else if (keycode == 126)
-//		all->plr->y -= 1.0/SCALE;
-//	else if (keycode == 125)
-//		all->plr->y += 1.0/SCALE;
-//	draw_picture(all->map, *(all->vars), all->plr);
-//	return (0);
-//}
-
-//int close_win(int keycode, t_vars *vars)
-//{
-//	if (keycode == 53)
-//		mlx_destroy_window(vars->mlx, vars->win);
-//}
-
 
 //int main(int argc, char **argv)
 //{

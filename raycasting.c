@@ -57,7 +57,7 @@ int 	hooker(int keycode, t_all *all)
 		all->plr->planeX = all->plr->planeX * cos(rotSpeed) - all->plr->planeY * sin(rotSpeed);
 		all->plr->planeY = oldPlaneX * sin(rotSpeed) + all->plr->planeY * cos(rotSpeed);
 	}
-	ft_draw(*all, all->texture);
+	ft_draw(all, all->texture);
 	if (keycode == 53)
 	{
 		mlx_destroy_window(all->vars->mlx, all->vars->win);
@@ -95,207 +95,34 @@ int 	hooker(int keycode, t_all *all)
 int main(int argc, char **argv)
 {
 	t_data img;
-	char **map;
-	t_plr player;
 	t_vars vars;
 	t_all all;
-	int x;
-	int y;
-	struct Sprite sprite[numSprites];
-	t_conf *conf;
 
-	if (!(conf = malloc(sizeof(t_conf))))
-		ft_error(1);
-	all.conf = conf;
-
+//	all = (t_all *)malloc(sizeof(t_all));
+	all.vars = &vars;
 	ft_parser(argv[1], &all);
-	vars.mlx = mlx_init();
-	img.img = mlx_new_image(vars.mlx, all.conf->width, all.conf->width);
+	ft_parse_map(&all);
+	ft_set_player(&all);
+	ft_make_textures(&all);
+//	all->vars->mlx = mlx_init();
+	all.vars->win = mlx_new_window(all.vars->mlx, all.conf->width,
+								   all.conf->height, "keks");
+	all.vars->img = &img;
+	img.img = mlx_new_image(all.vars->mlx, screenWidth, screenHeight);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
-	vars.win = mlx_new_window(vars.mlx, all.conf->width, all.conf->height, "keks");
-//	printf("%d\n", all.conf->width);
-//	printf("%d\n", all.conf->height);
-//	printf("%s\n", all.conf->ntext);
-//	printf("%s\n", all.conf->wtext);
-//	printf("%s\n", all.conf->etext);
-//	printf("%s\n", all.conf->stext);
-//	printf("%s\n", all.conf->sprite);
-//	printf("%d\n", all.conf->floor);
-//	printf("%d\n", all.conf->ceiling);
-	all.vars = &vars;
-	all.plr = &player;
-	//all.map = map;
-	map = all.map;
-	y = 0;
-	int n = 0;
-	while (map[y])
-	{
-		x = 0;
-		while (map[y][x])
-		{
-			if (ft_strchr("NEWS", map[y][x]))
-			{
-				player.posX = x + 0.5;
-				player.posY = y + 0.5;
-				player.dir = map[y][x];
-				map[y][x] = '0';
-			}
-			else if (map[y][x] == '2')
-			{
-				sprite[n].x = x + 0.5;
-				sprite[n].y = y + 0.5;
-				n++;
-			}
-			x++;
-		}
-		y++;
-	}
-
-	double posX = all.plr->posX, posY = all.plr->posY;  //x and y start position
-
-	double dirX, dirY; //initial direction vector ????
-	double planeX, planeY; //the 2d raycaster version of camera plane ?????
-	if (all.plr->dir == 'W')
-	{
-		dirX = -1.0;
-		dirY = 0.0;
-		planeX = 0.0;
-		planeY = -0.66;
-	}
-	else if (all.plr->dir == 'N')
-	{
-		dirX = 0.0;
-		dirY = -1.0;
-		planeX = 1.0;
-		planeY = 0.0;
-	}
-	else if (all.plr->dir == 'E')
-	{
-		dirX = 1.0;
-		dirY = 0.0;
-		planeX = 0.0;
-		planeY = 1.0;
-	}
-	else if (all.plr->dir == 'S')
-	{
-		dirX = 0.0;
-		dirY = 1.0;
-		planeX = -0.66;
-		planeY = 0.0;
-	}
-	all.plr->dirX = dirX;
-	all.plr->dirY = dirY;
-	all.plr->planeX = planeX;
-	all.plr->planeY = planeY;
-	//generate some textures
-//#if 0
-	int texture[9][texHeight * texWidth];
-	for (x = 0; x < texWidth; x++)
-	{
-		for (y = 0; y < texHeight; y++)
-		{
-			int xorcolor = (x * 256 / texWidth) ^(y * 256 / texHeight);
-			//int xcolor = x * 256 / texWidth;
-			int ycolor = y * 256 / texHeight;
-			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x !=
-																	texWidth -
-																	y); //flat red texture with black cross
-			texture[1][texWidth * y + x] = xycolor + 256 * xycolor +
-										   65536 * xycolor; //sloped greyscale
-			texture[2][texWidth * y + x] =
-					256 * xycolor + 65536 * xycolor; //sloped yellow gradient
-			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor +
-										   65536 * xorcolor; //xor greyscale
-			texture[4][texWidth * y + x] = 256 * xorcolor; //xor green
-			texture[5][texWidth * y + x] =
-					65536 * 192 * (x % 16 && y % 16); //red bricks
-			texture[6][texWidth * y + x] = 65536 * ycolor; //red gradient
-			texture[7][texWidth * y + x] =
-					128 + 256 * 128 + 65536 * 128; //flat grey texture
-		}
-	}
-	int width;
-	int height;
-	t_data  imgg;
-	char    *dst;
-
-	imgg.img = mlx_xpm_file_to_image(vars.mlx, "xpms/colorstone.xpm", &width, &height);
-	imgg.addr = mlx_get_data_addr(imgg.img, &imgg.bits_per_pixel, &imgg.line_length,
-								 &imgg.endian);
-	x = 0;
-	while (x < width)
-	{
-		y = 0;
-		while (y < height)
-		{
-			dst = imgg.addr + (y * imgg.line_length + x * (imgg.bits_per_pixel / 8));
-			texture[0][width * y + x] = *(int*)dst;
-			y++;
-		}
-		x++;
-	}
-	imgg.img = mlx_xpm_file_to_image(vars.mlx, "xpms/barrel.xpm", &width, &height);
-	imgg.addr = mlx_get_data_addr(imgg.img, &imgg.bits_per_pixel, &imgg.line_length,
-								  &imgg.endian);
-	x = 0;
-	while (x < width)
-	{
-		y = 0;
-		while (y < height)
-		{
-			dst = imgg.addr + (y * imgg.line_length + x * (imgg.bits_per_pixel / 8));
-			texture[8][width * y + x] = *(int*)dst;
-			y++;
-		}
-		x++;
-	}
-//	int *lol;
-//	lol = mlx_xpm_file_to_image(vars.mlx, "xpms/eagle.xpm", &width, &height);
-//	x = 0;
-//	while (x < width)
-//	{
-//		y = 0;
-//		while (y < height)
-//		{
-//			texture[2][width * x + y] = lol[width * y + x];
-//			y++;
-//		}
-//		x++;
-//	}
-
-//#else
-//	//generate some textures
-//	unsigned long tw, th;
-//	loadImage(texture[0], tw, th, "pics/eagle.png");
-//	loadImage(texture[1], tw, th, "pics/redbrick.png");
-//	loadImage(texture[2], tw, th, "pics/purplestone.png");
-//	loadImage(texture[3], tw, th, "pics/greystone.png");
-//	loadImage(texture[4], tw, th, "pics/bluestone.png");
-//	loadImage(texture[5], tw, th, "pics/mossy.png");
-//	loadImage(texture[6], tw, th, "pics/wood.png");
-//	loadImage(texture[7], tw, th, "pics/colorstone.png");
-//#endif
-
-	//start the main loop
-	all.texture = texture;
-	all.sprite = sprite;
-
-//	int w;
-//	int h;
 //	mlx_get_screen_size(all.vars->mlx, &w, &h);
 //	printf("%d, %d\n", w, h);
 //	mlx_do_key_autorepeatoff(all.vars->mlx);
-	ft_draw(all, texture);
-	ft_screenshot(all);
+	ft_draw(&all, all.texture);
+//	ft_screenshot(*all);
 	mlx_hook(all.vars->win, 2, 1L<<0, hooker, &all);
 	mlx_loop(all.vars->mlx);
 }
 
-void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
+void	ft_draw(t_all *all, int **texture)
 {
-	double posX = all.plr->posX, posY = all.plr->posY;  //x and y start position
+	double posX, posY;  //x and y start position
 	double dirX, dirY; //initial direction vector ????
 	double planeX, planeY; //the 2d raycaster version of camera plane ?????
 	int x, y;
@@ -305,15 +132,14 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 	int spriteOrder[numSprites];
 	double spriteDistance[numSprites];
 
-	all.vars->img = &img;
-	img.img = mlx_new_image(all.vars->mlx, screenWidth, screenHeight);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-								 &img.endian);
-	dirX = all.plr->dirX;
-	dirY = all.plr->dirY;
-	planeX = all.plr->planeX;
-	planeY = all.plr->planeY;
-	map = all.map;
+	posX = all->plr->posX;
+	posY = all->plr->posY;
+	img = *all->vars->img;
+	dirX = all->plr->dirX;
+	dirY = all->plr->dirY;
+	planeX = all->plr->planeX;
+	planeY = all->plr->planeY;
+	map = all->map;
 
 	for (x = 0; x < screenWidth; x++)
 	{
@@ -485,7 +311,7 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 	for (int i = 0; i < numSprites; i++)
 	{
 		spriteOrder[i] = i;
-		spriteDistance[i] = ((posX - all.sprite[i].x) * (posX - all.sprite[i].x) + (posY - all.sprite[i].y) * (posY - all.sprite[i].y)); //sqrt not taken, unneeded
+		spriteDistance[i] = ((posX - all->sprite[i].x) * (posX - all->sprite[i].x) + (posY - all->sprite[i].y) * (posY - all->sprite[i].y)); //sqrt not taken, unneeded
 	}
 	sortSprites(spriteOrder, spriteDistance, numSprites);
 
@@ -493,8 +319,8 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 	for (int i = 0; i < numSprites; i++)
 	{
 	//translate sprite position to relative to camera
-		double spriteX = all.sprite[spriteOrder[i]].x - posX;
-		double spriteY = all.sprite[spriteOrder[i]].y - posY;
+		double spriteX = all->sprite[spriteOrder[i]].x - posX;
+		double spriteY = all->sprite[spriteOrder[i]].y - posY;
 
 	//transform sprite with the inverse camera matrix
 	// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
@@ -549,7 +375,7 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 					int d = (y - vMoveScreen) * 256 - screenHeight * 128 + spriteHeight *
 																128; //256 and 128 factors to avoid floats
 					int texY = ((d * texHeight) / spriteHeight) / 256;
-					int color = texture[8][texHeight * texY + texX]; //get current color from the texture
+					int color = texture[4][texHeight * texY + texX]; //get current color from the texture
 					if ((color & 0x00FFFFFF) != 0)
 						my_mlx_pixel_put(&img, stripe, y, color); //paint pixel if it isn't black, black is the invisible color
 					//big_pixel_put(&img, 10, 10, 2134568);
@@ -571,7 +397,7 @@ void	ft_draw(t_all all, int texture[9][texHeight * texWidth])
 //		print(1.0 / frameTime); //FPS counter
 //		redraw();
 
-	mlx_put_image_to_window(all.vars->mlx, all.vars->win, img.img, 0, 0);
+	mlx_put_image_to_window(all->vars->mlx, all->vars->win, img.img, 0, 0);
 
 	//speed modifiers
 }
