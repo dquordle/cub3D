@@ -64,12 +64,20 @@ typedef struct	s_conf
 	int			numsprites;
 }				t_conf;
 
+typedef struct 		s_tex
+{
+	int				*texture;
+	int 			width;
+	int				height;
+}					t_tex;
+
 typedef struct		s_all
 {
 	t_vars			*vars;
 	t_plr			*plr;
 	char			**map;
 	int				**texture;
+	t_tex			*tex;
 	t_sprite		*sprite;
 	t_conf			*conf;
 }					t_all;
@@ -79,7 +87,7 @@ typedef struct		s_all
 int		get_next_line(int fd, char **line);
 void	ft_parser(char *file, t_all *all);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-void	ft_draw(t_all *all, int **texture);
+void	ft_draw(t_all *all);
 void 	sortSprites(int* order, double* dist, int amount);
 //void big_pixel_put(t_data *data, int x, int y, int color);
 void 	ft_screenshot(t_all all);

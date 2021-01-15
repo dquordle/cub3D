@@ -8,6 +8,12 @@ void 	ft_screenshot(t_all all)
 {
 	int fd;
 
+//	all.vars->img = &img;
+//	img.img = mlx_new_image(all.vars->mlx, all.conf->width, all.conf->height);
+//	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
+//								 &img.line_length, &img.endian);
+//	ft_draw(&all, all.texture);
+
 	fd = open("first_image.bmp", O_CREAT | O_WRONLY | O_TRUNC, 00777);
 	write(fd, "BM", 2);
 	unsigned int size = 54 + screenWidth * screenHeight * 4; // size of file

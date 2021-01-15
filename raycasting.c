@@ -8,9 +8,11 @@ int 	hooker(int keycode, t_all *all)
 	//move forward if no wall in front of you
 	if (keycode == 126 || keycode == 13)
 	{
-		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX + all->plr->dirX * moveSpeed)] != '1')
+		if (all->map[(int)(all->plr->posY)][(int)(all->plr->posX +
+		all->plr->dirX * moveSpeed)] != '1')
 			all->plr->posX += all->plr->dirX * moveSpeed;
-		if (all->map[(int)(all->plr->posY + all->plr->dirY * moveSpeed)][(int)(all->plr->posX)] != '1')
+		if (all->map[(int)(all->plr->posY + all->plr->dirY * moveSpeed)]
+		[(int)(all->plr->posX)] != '1')
 			all->plr->posY += all->plr->dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
@@ -57,7 +59,8 @@ int 	hooker(int keycode, t_all *all)
 		all->plr->planeX = all->plr->planeX * cos(rotSpeed) - all->plr->planeY * sin(rotSpeed);
 		all->plr->planeY = oldPlaneX * sin(rotSpeed) + all->plr->planeY * cos(rotSpeed);
 	}
-	ft_draw(all, all->texture);
+	ft_draw(all);
+	mlx_put_image_to_window(all->vars->mlx, all->vars->win, all->vars->img->img, 0, 0);
 	if (keycode == 53)
 	{
 		mlx_destroy_window(all->vars->mlx, all->vars->win);
@@ -67,60 +70,285 @@ int 	hooker(int keycode, t_all *all)
 	return (0);
 }
 
-//int main(int argc, char **argv)
-//{
-//	t_all all;
-//	t_conf *conf;
-//
-//	if (argc < 2 || argc > 3)
-//		ft_error(8);
-//	else if (argc == 3 && ft_strncmp(argv[2], "--save", 7))
-//		ft_error(8);
-//	if (!(conf = malloc(sizeof(t_conf))))
-//		ft_error(1);
-//	all.conf = conf;
-//	ft_parser(argv[1], &all);
-//	ft_draw();
-//	if (argc == 2)
-//	{
-//		mlx_new_window();
-//		put_image_to_win();
-//		hook;
-//		loop;
-//	}
-//	else
-//		ft_screenshot();
-//}
+void	ft_lets_play(t_all *all)
+{
+	t_data	*img;
+	int		width;
+	int		height;
+
+	mlx_get_screen_size(all->vars->mlx, &width, &height);
+	if (width < all->conf->width)
+		all->conf->width = width;
+	if (height < all->conf->height)
+		all->conf->height = height;
+	img = (t_data *)malloc(sizeof(t_data));
+	all->vars->img = img;
+	img->img = mlx_new_image(all->vars->mlx, all->conf->width, all->conf->height);
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel,
+								 &img->line_length, &img->endian);
+	ft_draw(all);
+	all->vars->win = mlx_new_window(all->vars->mlx, all->conf->width,
+								   all->conf->height, "keks");
+	mlx_put_image_to_window(all->vars->mlx, all->vars->win, all->vars->img->img, 0, 0);
+}
 
 int main(int argc, char **argv)
 {
-	t_data img;
 	t_vars vars;
 	t_all all;
 
-//	all = (t_all *)malloc(sizeof(t_all));
+	if (argc < 2 || argc > 3 || (argc == 3 && ft_strncmp(argv[2], "--save", 7)))
+		ft_error(8);
+	printf("%d\n", 9 < 8);
 	all.vars = &vars;
 	ft_parser(argv[1], &all);
 	ft_parse_map(&all);
 	ft_set_player(&all);
 	ft_make_textures(&all);
-//	all->vars->mlx = mlx_init();
-	all.vars->win = mlx_new_window(all.vars->mlx, all.conf->width,
-								   all.conf->height, "keks");
-	all.vars->img = &img;
-	img.img = mlx_new_image(all.vars->mlx, screenWidth, screenHeight);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-								 &img.endian);
-//	mlx_get_screen_size(all.vars->mlx, &w, &h);
-//	printf("%d, %d\n", w, h);
-//	mlx_do_key_autorepeatoff(all.vars->mlx);
-	ft_draw(&all, all.texture);
-//	ft_screenshot(*all);
-	mlx_hook(all.vars->win, 2, 1L<<0, hooker, &all);
-	mlx_loop(all.vars->mlx);
+	if (argc == 3)
+		ft_screenshot(all);
+	else
+	{
+		ft_lets_play(&all);
+		mlx_hook(all.vars->win, 2, 1L << 0, hooker, &all);
+		mlx_loop(all.vars->mlx);
+	}
 }
 
-void	ft_draw(t_all *all, int **texture)
+
+typedef struct	s_draw
+{
+	double cameraX;
+	double rayDirX;
+	double rayDirY;
+	int mapX;
+	int mapY;
+	double sideDistX;
+	double sideDistY;
+	double deltaDistX;
+	double deltaDistY;
+	double perpWallDist;
+	int stepX;
+	int stepY;
+	int side;
+	int lineHeight;
+	int drawStart;
+	int drawEnd;
+	int texNum;
+	double wallX;
+	double step;
+	double texPos;
+	int		texX;
+	int 	texY;
+	double	*distBuff;
+}				t_draw;
+
+void	ft_tex_conf(t_draw *draw, t_all *all)
+{
+	draw->lineHeight = (int)(all->conf->height / draw->perpWallDist);
+	draw->drawStart = -draw->lineHeight / 2 + all->conf->height / 2;
+	if (draw->drawStart < 0)
+		draw->drawStart = 0;
+	draw->drawEnd = draw->lineHeight / 2 + all->conf->height / 2;
+	if (draw->drawEnd >= all->conf->height)
+		draw->drawEnd = all->conf->height - 1;
+	draw->texNum = 3;
+	if (all->map[draw->mapY][draw->mapX] == '1')
+	{
+		if (draw->side == 1 && draw->stepY == 1)
+			draw->texNum = 0;
+		else if (draw->side == 1 && draw->stepY == -1)
+			draw->texNum = 1;
+		else if (draw->side == 0 && draw->stepX == 1)
+			draw->texNum = 2;
+	}
+	if (draw->side == 0)
+		draw->wallX = all->plr->posY + draw->perpWallDist * draw->rayDirY;
+	else
+		draw->wallX = all->plr->posX + draw->perpWallDist * draw->rayDirX;
+	draw->wallX -= floor((draw->wallX));
+	draw->step = 1.0 * all->tex[draw->texNum].height / draw->lineHeight;
+	draw->texPos = (draw->drawStart - all->conf->height / 2 +
+			draw->lineHeight / 2) * draw->step;
+}
+
+void	ft_cast_ray(t_draw *draw, t_all *all)
+{
+	int hit;
+
+	hit = 0;
+	while (hit == 0)
+	{
+		draw->side = draw->sideDistX > draw->sideDistY;
+		if (draw->sideDistX < draw->sideDistY)
+		{
+			draw->sideDistX += draw->deltaDistX;
+			draw->mapX += draw->stepX;
+		}
+		else
+		{
+			draw->sideDistY += draw->deltaDistY;
+			draw->mapY += draw->stepY;
+		}
+		if (all->map[draw->mapY][draw->mapX] == '1')
+			hit = 1;
+	}
+	if (draw->side == 0)
+		draw->perpWallDist = ((double)draw->mapX - all->plr->posX +
+				(1 - draw->stepX) / 2) / draw->rayDirX;
+	else
+		draw->perpWallDist = ((double)draw->mapY - all->plr->posY +
+				(1 - draw->stepY) / 2) / draw->rayDirY;
+}
+
+t_draw 	*ft_setup(t_all *all, int x)
+{
+	t_draw	*draw;
+
+	draw = (t_draw *)malloc(sizeof(t_draw));
+	draw->cameraX = 2 * x / (double)all->conf->width - 1;
+	draw->rayDirX = all->plr->dirX + all->plr->planeX * draw->cameraX;
+	draw->rayDirY = all->plr->dirY + all->plr->planeY * draw->cameraX;
+	draw->mapX = (int)all->plr->posX;
+	draw->mapY = (int)all->plr->posY;
+	draw->deltaDistX = fabs(1 / draw->rayDirX);
+	draw->deltaDistY = fabs(1 / draw->rayDirY);
+	if (draw->rayDirX < 0)
+		draw->sideDistX = (all->plr->posX - draw->mapX) * draw->deltaDistX;
+	else
+		draw->sideDistX = (draw->mapX + 1.0 - all->plr->posX) * draw->deltaDistX;
+	if (draw->rayDirY < 0)
+		draw->sideDistY = (all->plr->posY - draw->mapY) * draw->deltaDistY;
+	else
+		draw->sideDistY = (draw->mapY + 1.0 - all->plr->posY) * draw->deltaDistY;
+	draw->stepX = draw->rayDirX / fabs(draw->rayDirX);
+	draw->stepY = draw->rayDirY / fabs(draw->rayDirY);
+	draw->distBuff = (double *)malloc(sizeof(double) * all->conf->width);
+}
+
+void	ft_line_draw(t_draw *draw, t_all *all, int x)
+{
+	int y;
+
+	draw->texX = (int)(draw->wallX * (double)all->tex[draw->texNum].width);
+	if (draw->side == 0 && draw->rayDirX > 0)
+		draw->texX = all->tex[draw->texNum].width - draw->texX - 1;
+	if (draw->side == 1 && draw->rayDirY < 0)
+		draw->texX = all->tex[draw->texNum].width - draw->texX - 1;
+	y = draw->drawStart;
+	while (y < draw->drawEnd)
+	{
+		draw->texY = (int)draw->texPos;
+		draw->texPos += draw->step;
+		my_mlx_pixel_put(all->vars->img, x, y++,
+				   all->tex[draw->texNum].texture[all->tex[draw->texNum]
+				   .height * draw->texY + draw->texX]);
+	}
+	y = all->conf->height - 1;
+	while (y > draw->drawEnd)
+		my_mlx_pixel_put(all->vars->img, x, y--, all->conf->floor);
+	y = 0;
+	while (y < draw->drawStart)
+		my_mlx_pixel_put(all->vars->img, x, y, all->conf->ceiling);
+}
+
+void	ft_draw_sprites()
+{
+	for (int i = 0; i < numSprites; i++)
+	{
+		spriteOrder[i] = i;
+		spriteDistance[i] = ((posX - all->sprite[i].x) * (posX - all->sprite[i].x) + (posY - all->sprite[i].y) * (posY - all->sprite[i].y)); //sqrt not taken, unneeded
+	}
+	sortSprites(spriteOrder, spriteDistance, numSprites);
+
+	//after sorting the sprites, do the projection and draw them
+	for (int i = 0; i < numSprites; i++)
+	{
+		//translate sprite position to relative to camera
+		double spriteX = all->sprite[spriteOrder[i]].x - posX;
+		double spriteY = all->sprite[spriteOrder[i]].y - posY;
+
+		//transform sprite with the inverse camera matrix
+		// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+		// [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+		// [ planeY   dirY ]                                          [ -planeY  planeX ]
+
+		double invDet = 1.0 / (planeX * dirY - dirX * planeY); //required for correct matrix multiplication
+
+		double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+		double transformY = invDet * (-planeY * spriteX + planeX * spriteY); //this is actually the depth inside the screen, that what Z is in 3D, the distance of sprite to player, matching sqrt(spriteDistance[i])
+
+		int spriteScreenX = (int)((screenWidth / 2) * (1 + transformX / transformY));
+
+		//parameters for scaling and moving the sprites
+#define uDiv 1
+#define vDiv 1
+#define vMove 0.0
+		int vMoveScreen = (int)(vMove / transformY);
+
+		//calculate height of the sprite on screen
+		int spriteHeight = abs((int)(screenHeight / (transformY)) / vDiv); //using "transformY" instead of the real distance prevents fisheye
+		//calculate lowest and highest pixel to fill in current stripe
+		int drawStartY = -spriteHeight / 2 + screenHeight / 2 + vMoveScreen;
+		if (drawStartY < 0)
+			drawStartY = 0;
+		int drawEndY = spriteHeight / 2 + screenHeight / 2 + vMoveScreen;
+		if (drawEndY >= screenHeight)
+			drawEndY = screenHeight - 1;
+
+		//calculate width of the sprite
+		int spriteWidth = abs((int)(screenHeight / (transformY))) / uDiv;
+		int drawStartX = -spriteWidth / 2 + spriteScreenX;
+		if (drawStartX < 0)
+			drawStartX = 0;
+		int drawEndX = spriteWidth / 2 + spriteScreenX;
+		if (drawEndX >= screenWidth)
+			drawEndX = screenWidth - 1;
+
+		//loop through every vertical stripe of the sprite on screen
+		for (int stripe = drawStartX; stripe < drawEndX; stripe++)
+		{
+			int texX = (int)(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
+			//the conditions in the if are:
+			//1) it's in front of camera plane so you don't see things behind you
+			//2) it's on the screen (left)
+			//3) it's on the screen (right)
+			//4) ZBuffer, with perpendicular distance
+			if (transformY > 0 && stripe > 0 && stripe < screenWidth && transformY < ZBuffer[stripe])
+			{
+				for (int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+				{
+					int d = (y - vMoveScreen) * 256 - screenHeight * 128 + spriteHeight *
+																		   128; //256 and 128 factors to avoid floats
+					int texY = ((d * texHeight) / spriteHeight) / 256;
+					int color = all->tex[4].texture[texHeight * texY + texX]; //get current color from the texture
+					if ((color & 0x00FFFFFF) != 0)
+						my_mlx_pixel_put(&img, stripe, y, color); //paint pixel if it isn't black, black is the invisible color
+					//big_pixel_put(&img, 10, 10, 2134568);
+				}
+			}
+		}
+	}
+}
+
+void	ft_draw(t_all *all)
+{
+	t_draw *draw;
+	int x;
+
+	x = 0;
+	while (x < all->conf->width)
+	{
+		draw = ft_setup(all, x);
+		ft_cast_ray(draw, all);
+		ft_tex_conf(draw, all);
+		ft_line_draw(draw, all, x);
+		draw->distBuff[x] = draw->perpWallDist;
+	}
+	ft_draw_sprites();
+}
+
+void	ft_draw(t_all *all)
 {
 	double posX, posY;  //x and y start position
 	double dirX, dirY; //initial direction vector ????
@@ -179,6 +407,7 @@ void	ft_draw(t_all *all, int **texture)
 			stepX = 1;
 			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
 		}
+		stepX = rayDirX / fabs(rayDirX);
 		if(rayDirY < 0)
 		{
 			stepY = -1;
@@ -244,14 +473,14 @@ void	ft_draw(t_all *all, int **texture)
 			texNum = 4;
 		//calculate value of wallX
 		double wallX; //where exactly the wall was hit
-		if(side == 0)
+		if (side == 0)
 			wallX = posY + perpWallDist * rayDirY;
 		else
 			wallX = posX + perpWallDist * rayDirX;
 		wallX -= floor((wallX));
 
 		//x coordinate on the texture
-		int texX = (int)(wallX * (double)texWidth);
+		int texX = (int)(wallX * (double)texWidth);		//// THIS BLOCK ISNT IN ANY FUNCTION
 		if (side == 0 && rayDirX > 0)
 			texX = texWidth - texX - 1;
 		if (side == 1 && rayDirY < 0)
@@ -264,9 +493,9 @@ void	ft_draw(t_all *all, int **texture)
 		for (y = drawStart; y < drawEnd; y++)
 		{
 			// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
-			int texY = (int)texPos & (texHeight - 1);
+			int texY = (int)texPos; //& (texHeight - 1);
 			texPos += step;
-			int color = texture[texNum][texHeight * texY + texX];
+			int color = all->tex[texNum].texture[texHeight * texY + texX];
 			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
 			if (side == 1)
 				color = (color >> 1) & 8355711;
@@ -375,7 +604,7 @@ void	ft_draw(t_all *all, int **texture)
 					int d = (y - vMoveScreen) * 256 - screenHeight * 128 + spriteHeight *
 																128; //256 and 128 factors to avoid floats
 					int texY = ((d * texHeight) / spriteHeight) / 256;
-					int color = texture[4][texHeight * texY + texX]; //get current color from the texture
+					int color = all->tex[4].texture[texHeight * texY + texX]; //get current color from the texture
 					if ((color & 0x00FFFFFF) != 0)
 						my_mlx_pixel_put(&img, stripe, y, color); //paint pixel if it isn't black, black is the invisible color
 					//big_pixel_put(&img, 10, 10, 2134568);
@@ -383,30 +612,13 @@ void	ft_draw(t_all *all, int **texture)
 			}
 		}
 	}
-
-
-		//drawBuffer(buffer[0]);
-//
-//		for(int y = 0; y < h; y++)
-//			for(int x = 0; x < w; x++)
-//				buffer[y][x] = 0; //clear the buffer instead of cls()
-		//timing for input and FPS counter
-//		oldTime = time;
-//		time = getTicks();
-//		double frameTime = (time - oldTime) / 1000.0; //frametime is the time this frame has taken, in seconds
-//		print(1.0 / frameTime); //FPS counter
-//		redraw();
-
-	mlx_put_image_to_window(all->vars->mlx, all->vars->win, img.img, 0, 0);
-
-	//speed modifiers
 }
 
 void 	sortSprites(int *order, double *dist, int amount)
 {
 	int i;
 	int temp;
-	double dtemp;
+	double dist_temp;
 
 	while (amount > 1)
 	{
@@ -418,9 +630,9 @@ void 	sortSprites(int *order, double *dist, int amount)
 				temp = order[i];
 				order[i] = order[i + 1];
 				order[i + 1] = temp;
-				dtemp = dist[i];
+				dist_temp = dist[i];
 				dist[i] = dist[i + 1];
-				dist[i + 1] = dtemp;
+				dist[i + 1] = dist_temp;
 			}
 			i++;
 		}

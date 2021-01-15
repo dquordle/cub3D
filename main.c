@@ -312,7 +312,7 @@ void	ft_parse_map(t_all *all)
 	ft_parse_sprites(all, n);
 }
 
-int		*ft_texture_to_array(t_data *img, int width, int height)
+void	ft_tex_to_array(t_data *img, int width, int height, t_all *all,int num)
 {
 	int x;
 	int y;
@@ -320,44 +320,47 @@ int		*ft_texture_to_array(t_data *img, int width, int height)
 	int		*texture;
 
 	texture = (int *)malloc(sizeof(int) * width * height);
-	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length,
-								 &img->endian);
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel,
+							   &img->line_length, &img->endian);
 	x = 0;
 	while (x < width)
 	{
 		y = 0;
 		while (y < height)
 		{
-			dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+			dst = img->addr + (y * img->line_length +
+					x * (img->bits_per_pixel / 8));
 			texture[width * y + x] = *(int *) dst;
 			y++;
 		}
 		x++;
 	}
-	return (texture);
+	all->tex[num].texture = texture;
+	all->tex[num].width = width;
+	all->tex[num].height = height;
 }
 
 void	ft_make_textures(t_all *all)
 {
-	int		**textures;
+	t_tex	*tex;
 	t_data  img;
-	int width;
-	int height;
+	int w;
+	int h;
 
-	textures = (int **)malloc(sizeof(int *) * 5);
+	tex = (t_tex *)malloc(sizeof(t_tex) * 5);
+	all->tex = tex;
 	all->vars->mlx = mlx_init();
-	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->ntext, &width, &height);
-	textures[0] = ft_texture_to_array(&img, width, height);
-	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->stext, &width, &height);
-	textures[1] = ft_texture_to_array(&img, width, height);
-	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->wtext, &width, &height);
-	textures[2] = ft_texture_to_array(&img, width, height);
-	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->etext, &width, &height);
-	textures[3] = ft_texture_to_array(&img, width, height);
-	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->sprite, &width, &height);
-	textures[4] = ft_texture_to_array(&img, width, height);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->ntext, &w, &h);
+	ft_tex_to_array(&img, w, h, all, 0);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->stext, &w, &h);
+	ft_tex_to_array(&img, w, h, all, 1);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->wtext, &w, &h);
+	ft_tex_to_array(&img, w, h, all, 2);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->etext, &w, &h);
+	ft_tex_to_array(&img, w, h, all, 3);
+	img.img = mlx_xpm_file_to_image(all->vars->mlx, all->conf->sprite, &w, &h);
+	ft_tex_to_array(&img, w, h, all, 4);
 	mlx_destroy_image(all->vars->mlx, img.img);
-	all->texture = textures;
 }
 
 //void big_pixel_put(t_data *data, int x, int y, int color)
