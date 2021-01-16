@@ -71,12 +71,57 @@ typedef struct 		s_tex
 	int				height;
 }					t_tex;
 
+
+typedef struct	s_draw
+{
+	double cameraX;
+	double rayDirX;
+	double rayDirY;
+	int mapX;
+	int mapY;
+	double sideDistX;
+	double sideDistY;
+	double deltaDistX;
+	double deltaDistY;
+	double perpWallDist;
+	int stepX;
+	int stepY;
+	int side;
+	int lineHeight;
+	int drawStart;
+	int drawEnd;
+	int texNum;
+	double wallX;
+	double step;
+	double texPos;
+	int		texX;
+	int 	texY;
+	double	*distBuff;
+}				t_draw;
+
+typedef struct	s_drsp
+{
+	int		*order;
+	double	*dist;
+	double	spriteX;
+	double	spriteY;
+	double	invDet;
+	double 	transformX;
+	double 	transformY;
+	int		sprScreenX;
+	int		sprHeight;
+	int		drawStartY;
+	int		drawEndY;
+	int		spriteWidth;
+	int		drawStartX;
+	int		drawEndX;
+}				t_drsp;
+
 typedef struct		s_all
 {
 	t_vars			*vars;
 	t_plr			*plr;
 	char			**map;
-	int				**texture;
 	t_tex			*tex;
 	t_sprite		*sprite;
 	t_conf			*conf;
