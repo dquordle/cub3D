@@ -143,6 +143,33 @@ cub3D/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/build
 .PHONY : cub3D/fast
 
+draw_sprite.o: draw_sprite.c.o
+
+.PHONY : draw_sprite.o
+
+# target to build an object file
+draw_sprite.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/draw_sprite.c.o
+.PHONY : draw_sprite.c.o
+
+draw_sprite.i: draw_sprite.c.i
+
+.PHONY : draw_sprite.i
+
+# target to preprocess a source file
+draw_sprite.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/draw_sprite.c.i
+.PHONY : draw_sprite.c.i
+
+draw_sprite.s: draw_sprite.c.s
+
+.PHONY : draw_sprite.s
+
+# target to generate assembly for a file
+draw_sprite.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/draw_sprite.c.s
+.PHONY : draw_sprite.c.s
+
 errors.o: errors.c.o
 
 .PHONY : errors.o
@@ -169,6 +196,33 @@ errors.s: errors.c.s
 errors.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/errors.c.s
 .PHONY : errors.c.s
+
+free.o: free.c.o
+
+.PHONY : free.o
+
+# target to build an object file
+free.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/free.c.o
+.PHONY : free.c.o
+
+free.i: free.c.i
+
+.PHONY : free.i
+
+# target to preprocess a source file
+free.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/free.c.i
+.PHONY : free.c.i
+
+free.s: free.c.s
+
+.PHONY : free.s
+
+# target to generate assembly for a file
+free.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/free.c.s
+.PHONY : free.c.s
 
 get_next_line.o: get_next_line.c.o
 
@@ -197,6 +251,33 @@ get_next_line.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/get_next_line.c.s
 .PHONY : get_next_line.c.s
 
+hooks.o: hooks.c.o
+
+.PHONY : hooks.o
+
+# target to build an object file
+hooks.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/hooks.c.o
+.PHONY : hooks.c.o
+
+hooks.i: hooks.c.i
+
+.PHONY : hooks.i
+
+# target to preprocess a source file
+hooks.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/hooks.c.i
+.PHONY : hooks.c.i
+
+hooks.s: hooks.c.s
+
+.PHONY : hooks.s
+
+# target to generate assembly for a file
+hooks.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/hooks.c.s
+.PHONY : hooks.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -223,6 +304,60 @@ main.s: main.c.s
 main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/main.c.s
 .PHONY : main.c.s
+
+parser.o: parser.c.o
+
+.PHONY : parser.o
+
+# target to build an object file
+parser.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/parser.c.o
+.PHONY : parser.c.o
+
+parser.i: parser.c.i
+
+.PHONY : parser.i
+
+# target to preprocess a source file
+parser.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/parser.c.i
+.PHONY : parser.c.i
+
+parser.s: parser.c.s
+
+.PHONY : parser.s
+
+# target to generate assembly for a file
+parser.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/parser.c.s
+.PHONY : parser.c.s
+
+player.o: player.c.o
+
+.PHONY : player.o
+
+# target to build an object file
+player.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/player.c.o
+.PHONY : player.c.o
+
+player.i: player.c.i
+
+.PHONY : player.i
+
+# target to preprocess a source file
+player.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/player.c.i
+.PHONY : player.c.i
+
+player.s: player.c.s
+
+.PHONY : player.s
+
+# target to generate assembly for a file
+player.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/player.c.s
+.PHONY : player.c.s
 
 raycasting.o: raycasting.c.o
 
@@ -305,33 +440,6 @@ screenshot.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/screenshot.c.s
 .PHONY : screenshot.c.s
 
-start.o: start.c.o
-
-.PHONY : start.o
-
-# target to build an object file
-start.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/start.c.o
-.PHONY : start.c.o
-
-start.i: start.c.i
-
-.PHONY : start.i
-
-# target to preprocess a source file
-start.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/start.c.i
-.PHONY : start.c.i
-
-start.s: start.c.s
-
-.PHONY : start.s
-
-# target to generate assembly for a file
-start.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cub3D.dir/build.make CMakeFiles/cub3D.dir/start.c.s
-.PHONY : start.c.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -341,15 +449,30 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... cub3D"
+	@echo "... draw_sprite.o"
+	@echo "... draw_sprite.i"
+	@echo "... draw_sprite.s"
 	@echo "... errors.o"
 	@echo "... errors.i"
 	@echo "... errors.s"
+	@echo "... free.o"
+	@echo "... free.i"
+	@echo "... free.s"
 	@echo "... get_next_line.o"
 	@echo "... get_next_line.i"
 	@echo "... get_next_line.s"
+	@echo "... hooks.o"
+	@echo "... hooks.i"
+	@echo "... hooks.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... parser.o"
+	@echo "... parser.i"
+	@echo "... parser.s"
+	@echo "... player.o"
+	@echo "... player.i"
+	@echo "... player.s"
 	@echo "... raycasting.o"
 	@echo "... raycasting.i"
 	@echo "... raycasting.s"
@@ -359,9 +482,6 @@ help:
 	@echo "... screenshot.o"
 	@echo "... screenshot.i"
 	@echo "... screenshot.s"
-	@echo "... start.o"
-	@echo "... start.i"
-	@echo "... start.s"
 .PHONY : help
 
 

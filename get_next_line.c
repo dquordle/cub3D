@@ -6,7 +6,7 @@
 /*   By: dquordle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 15:51:59 by dquordle          #+#    #+#             */
-/*   Updated: 2020/11/18 13:58:53 by dquordle         ###   ########.fr       */
+/*   Updated: 2021/01/17 16:43:46 by dquordle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int		ft_reading(char **rem, char **line, int fd)
 			free(*rem);
 			return (-1);
 		}
-		if(!(check = read(fd, *rem, 9999)))
+		if (!(check = read(fd, *rem, 9999)))
 		{
 			free(*rem);
 			return (0);
@@ -82,7 +82,7 @@ int		get_next_line(int fd, char **line)
 		return (-1);
 	if (!rem)
 	{
-		if(!(rem = (char *)malloc(10000)))
+		if (!(rem = (char *)malloc(10000)))
 			return (-1);
 		check = read(fd, rem, 9999);
 		rem[check] = 0;

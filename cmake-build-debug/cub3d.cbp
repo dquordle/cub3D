@@ -81,10 +81,19 @@
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/cub3D.h">
 			<Option target="cub3D"/>
 		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/draw_sprite.c">
+			<Option target="cub3D"/>
+		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/errors.c">
 			<Option target="cub3D"/>
 		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/free.c">
+			<Option target="cub3D"/>
+		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/get_next_line.c">
+			<Option target="cub3D"/>
+		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/hooks.c">
 			<Option target="cub3D"/>
 		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/libft.h">
@@ -96,6 +105,12 @@
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/mlx.h">
 			<Option target="cub3D"/>
 		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/parser.c">
+			<Option target="cub3D"/>
+		</Unit>
+		<Unit filename="/Users/dquordle/CLionProjects/cub3D/player.c">
+			<Option target="cub3D"/>
+		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/raycasting.c">
 			<Option target="cub3D"/>
 		</Unit>
@@ -103,9 +118,6 @@
 			<Option target="cub3D"/>
 		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/screenshot.c">
-			<Option target="cub3D"/>
-		</Unit>
-		<Unit filename="/Users/dquordle/CLionProjects/cub3D/start.c">
 			<Option target="cub3D"/>
 		</Unit>
 		<Unit filename="/Users/dquordle/CLionProjects/cub3D/CMakeLists.txt">

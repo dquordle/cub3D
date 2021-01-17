@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/dquordle/CLionProjects/cub3D/cub3D.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
 unistd.h
 -
 stdio.h
@@ -20,15 +20,55 @@ mlx.h
 libft.h
 /Users/dquordle/CLionProjects/cub3D/libft.h
 
+/Users/dquordle/CLionProjects/cub3D/draw_sprite.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
+/Users/dquordle/CLionProjects/cub3D/errors.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
+/Users/dquordle/CLionProjects/cub3D/free.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
+/Users/dquordle/CLionProjects/cub3D/get_next_line.c
+libft.h
+/Users/dquordle/CLionProjects/cub3D/libft.h
+
+/Users/dquordle/CLionProjects/cub3D/hooks.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
 /Users/dquordle/CLionProjects/cub3D/libft.h
 unistd.h
 -
 stdlib.h
 -
 
+/Users/dquordle/CLionProjects/cub3D/main.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
 /Users/dquordle/CLionProjects/cub3D/mlx.h
 
+/Users/dquordle/CLionProjects/cub3D/parser.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
+/Users/dquordle/CLionProjects/cub3D/player.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
 /Users/dquordle/CLionProjects/cub3D/raycasting.c
-cub3D.h
-/Users/dquordle/CLionProjects/cub3D/cub3D.h
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
+/Users/dquordle/CLionProjects/cub3D/read_file.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
+
+/Users/dquordle/CLionProjects/cub3D/screenshot.c
+cub3d.h
+/Users/dquordle/CLionProjects/cub3D/cub3d.h
 
